@@ -44,8 +44,6 @@ fun BottomMenu(
                 )
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
-                Spacer(Modifier.width(4.dp))
-                Text("Add")
             }
 
             // Edit button
@@ -60,8 +58,6 @@ fun BottomMenu(
                 )
             ) {
                 Icon(Icons.Default.Edit, contentDescription = "Edit")
-                Spacer(Modifier.width(4.dp))
-                Text("Edit")
             }
 
             // Delete button
@@ -70,15 +66,11 @@ fun BottomMenu(
                 enabled = hasSelection
             ) {
                 Icon(Icons.Default.Delete, contentDescription = "Delete")
-                Spacer(Modifier.width(4.dp))
-                Text("Delete")
             }
 
             // Export button
             FilledTonalButton(onClick = onExportClick) {
                 Icon(Icons.Default.Share, contentDescription = "Export")
-                Spacer(Modifier.width(4.dp))
-                Text("Export")
             }
         }
     }

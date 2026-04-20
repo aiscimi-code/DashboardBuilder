@@ -55,7 +55,12 @@ class MainViewModel : ViewModel() {
     fun addBox(type: BoxType) {
         _uiState.update { state ->
             val tab = state.appState.tabs.find { it.id == state.selectedTabId } ?: return@update state
-            val position = GridEngine.findFirstAvailable(tab.boxes, Size(2, 2))
+            // Get default size based on type
+            val defaultSize = when (type) {
+                BoxType.BUTTON -> Size(1, 1)
+                else -> Size(10, 2)
+            }
+            val position = GridEngine.findFirstAvailable(tab.boxes, defaultSize)
             val newBox = Box.create(type, position)
 
             val updatedTab = tab.copy(boxes = tab.boxes + newBox)

@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Size(
-    val w: Int = 2,
+    val w: Int = 10,
     val h: Int = 2
 )

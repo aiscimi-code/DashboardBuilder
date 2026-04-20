@@ -1,14 +1,18 @@
 package com.dashboard.builder.ui.components.grid
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -22,14 +26,24 @@ fun GridCanvas(
     tab: Tab,
     selectedBoxId: String?,
     cellSize: Dp = 80.dp,
+    availableWidth: Dp = 0.dp,
     onBoxSelected: (String?) -> Unit,
     onBoxMoved: (String, Int, Int) -> Unit,
     onBoxResized: (String, Int, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
+    val horizontalScrollState = rememberScrollState()
     val density = LocalDensity.current
-    val cellSizePx = with(density) { cellSize.toPx() }
+    
+    // Calculate cell size based on available width - fit 10 columns to screen
+    val calculatedCellSize = if (availableWidth.value > 0) {
+        (availableWidth / GridEngine.COLUMNS).coerceAtMost(cellSize)
+    } else {
+        cellSize
+    }
+    val actualCellSize = calculatedCellSize
+    val cellSizePx = with(density) { actualCellSize.toPx() }
 
     // Calculate grid dimensions
     val gridWidth = GridEngine.COLUMNS * cellSizePx
@@ -39,12 +53,40 @@ fun GridCanvas(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
+            .horizontalScroll(horizontalScrollState)
             .background(Color(android.graphics.Color.parseColor(tab.backgroundColor)))
     ) {
         Box(
             modifier = Modifier
-                .width(with(density) { (gridWidth / density.density).toDp() })
-                .height(with(density) { (gridHeight / density.density).toDp() })
+                .width(actualCellSize * GridEngine.COLUMNS)
+                .height(actualCellSize * GridEngine.ROWS)
+                .drawBehind {
+                    // Draw grid lines
+                    val gridColor = Color.Gray.copy(alpha = 0.3f)
+                    val borderColor = Color.Gray.copy(alpha = 0.5f)
+                    
+                    // Vertical lines (10 columns)
+                    for (col in 0..GridEngine.COLUMNS) {
+                        val x = col * cellSizePx
+                        drawLine(
+                            color = if (col == 0 || col == GridEngine.COLUMNS) borderColor else gridColor,
+                            start = Offset(x, 0f),
+                            end = Offset(x, gridHeight),
+                            strokeWidth = if (col == 0 || col == GridEngine.COLUMNS) 2f else 1f
+                        )
+                    }
+                    
+                    // Horizontal lines (32 rows)
+                    for (row in 0..GridEngine.ROWS) {
+                        val y = row * cellSizePx
+                        drawLine(
+                            color = if (row == 0 || row == GridEngine.ROWS) borderColor else gridColor,
+                            start = Offset(0f, y),
+                            end = Offset(gridWidth, y),
+                            strokeWidth = if (row == 0 || row == GridEngine.ROWS) 2f else 1f
+                        )
+                    }
+                }
         ) {
             // Render non-floating boxes
             tab.boxes.filter { !it.floating }.forEach { box ->
@@ -92,6 +134,8 @@ private fun DraggableBoxItem(
 ) {
     var isDragging by remember { mutableStateOf(false) }
     var isResizing by remember { mutableStateOf(false) }
+    var totalDragX by remember { mutableFloatStateOf(0f) }
+    var totalDragY by remember { mutableFloatStateOf(0f) }
 
     Box(
         modifier = Modifier
@@ -103,29 +147,52 @@ private fun DraggableBoxItem(
                 width = cellSize * box.size.w,
                 height = cellSize * box.size.h
             )
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = { offset ->
-                        // Determine if starting from corner (resize) or center (move)
-                        val boxWidth = box.size.w * cellSizePx
-                        val boxHeight = box.size.h * cellSizePx
-                        isResizing = offset.x > boxWidth - 48 && offset.y > boxHeight - 48
-                        isDragging = true
-                    },
-                    onDragEnd = {
-                        isDragging = false
-                        isResizing = false
-                    },
-                    onDrag = { change, dragAmount ->
-                        change.consume()
-                        if (isResizing) {
-                            onResized(dragAmount.x, dragAmount.y)
-                        } else {
-                            onMoved(dragAmount.x, dragAmount.y)
-                        }
+            .then(
+                if (!box.locked) {
+                    Modifier.pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset ->
+                                val boxWidth = box.size.w * cellSizePx
+                                val boxHeight = box.size.h * cellSizePx
+                                isResizing = offset.x > boxWidth - 48 && offset.y > boxHeight - 48
+                                totalDragX = 0f
+                                totalDragY = 0f
+                                isDragging = true
+                            },
+                            onDragEnd = {
+                                isDragging = false
+                                isResizing = false
+                            },
+                            onDrag = { change, dragAmount ->
+                                change.consume()
+                                totalDragX += dragAmount.x
+                                totalDragY += dragAmount.y
+                                
+                                // Only move/resize when drag exceeds half a cell
+                                if (isResizing) {
+                                    if (kotlin.math.abs(totalDragX) >= cellSizePx / 2f || kotlin.math.abs(totalDragY) >= cellSizePx / 2f) {
+                                        onResized(
+                                            if (totalDragX > 0) cellSizePx else -cellSizePx,
+                                            if (totalDragY > 0) cellSizePx else -cellSizePx
+                                        )
+                                        totalDragX = 0f
+                                        totalDragY = 0f
+                                    }
+                                } else {
+                                    if (kotlin.math.abs(totalDragX) >= cellSizePx / 2f || kotlin.math.abs(totalDragY) >= cellSizePx / 2f) {
+                                        onMoved(
+                                            if (totalDragX > 0) 1f else -1f,
+                                            if (totalDragY > 0) 1f else -1f
+                                        )
+                                        totalDragX = 0f
+                                        totalDragY = 0f
+                                    }
+                                }
+                            }
+                        )
                     }
-                )
-            }
+                } else Modifier
+            )
             .pointerInput(Unit) {
                 awaitPointerEventScope {
                     while (true) {

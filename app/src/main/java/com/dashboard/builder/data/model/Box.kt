@@ -24,12 +24,17 @@ data class Box(
         }
 
         fun create(type: BoxType, position: Position = Position()): Box {
+            // Default sizes: boxes are 10x2, buttons are 1x1
+            val defaultSize = when (type) {
+                BoxType.BUTTON -> Size(1, 1)
+                else -> Size(10, 2)
+            }
             return Box(
                 id = generateId(type),
                 type = type,
                 label = type.name.lowercase().replaceFirstChar { it.uppercase() },
                 position = position,
-                size = Size(2, 2),
+                size = defaultSize,
                 config = BoxConfig.default(type)
             )
         }
