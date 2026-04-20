@@ -23,7 +23,8 @@ import com.dashboard.builder.data.model.*
 @Composable
 fun BoxContent(
     box: Box,
-    isSelected: Boolean
+    isSelected: Boolean,
+    isMoveMode: Boolean = false
 ) {
     val backgroundColor = try {
         Color(android.graphics.Color.parseColor(box.style.backgroundColor))
@@ -42,17 +43,17 @@ fun BoxContent(
             .padding(4.dp)
     ) {
         when (box.type) {
-            BoxType.INPUT -> InputBoxContent(box, isSelected)
+            BoxType.INPUT -> InputBoxContent(box, isSelected, isMoveMode)
             BoxType.TEXT -> TextBoxContent(box, isSelected)
-            BoxType.BUTTON -> ButtonBoxContent(box)
-            BoxType.CHECKBOX_LIST -> CheckboxListContent(box, isSelected)
-            BoxType.COUNTER -> CounterContent(box, isSelected)
+            BoxType.BUTTON -> ButtonBoxContent(box, isMoveMode)
+            BoxType.CHECKBOX_LIST -> CheckboxListContent(box, isSelected, isMoveMode)
+            BoxType.COUNTER -> CounterContent(box, isSelected, isMoveMode)
         }
     }
 }
 
 @Composable
-private fun InputBoxContent(box: Box, isSelected: Boolean) {
+private fun InputBoxContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = false) {
     val config = box.config as? InputConfig ?: return
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -70,6 +71,7 @@ private fun InputBoxContent(box: Box, isSelected: Boolean) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
+            enabled = !isMoveMode, // Disable input in move mode
             textStyle = TextStyle(fontSize = 12.sp),
             cursorBrush = SolidColor(Color.Black),
             decorationBox = { innerTextField ->
@@ -110,7 +112,7 @@ private fun TextBoxContent(box: Box, isSelected: Boolean) {
 }
 
 @Composable
-private fun ButtonBoxContent(box: Box) {
+private fun ButtonBoxContent(box: Box, isMoveMode: Boolean = false) {
     val config = box.config as? ButtonConfig ?: return
 
     // Buttons don't show labels - only the button text
@@ -121,6 +123,7 @@ private fun ButtonBoxContent(box: Box) {
     ) {
         Button(
             onClick = { /* Handled by ViewModel */ },
+            enabled = !isMoveMode, // Disable button in move mode
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(config.text, fontSize = 12.sp)
@@ -129,7 +132,7 @@ private fun ButtonBoxContent(box: Box) {
 }
 
 @Composable
-private fun CheckboxListContent(box: Box, isSelected: Boolean) {
+private fun CheckboxListContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = false) {
     val config = box.config as? CheckboxListConfig ?: return
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -161,6 +164,7 @@ private fun CheckboxListContent(box: Box, isSelected: Boolean) {
                         Checkbox(
                             checked = item.checked,
                             onCheckedChange = { /* Handled by ViewModel */ },
+                            enabled = !isMoveMode, // Disable in move mode
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
@@ -176,7 +180,7 @@ private fun CheckboxListContent(box: Box, isSelected: Boolean) {
 }
 
 @Composable
-private fun CounterContent(box: Box, isSelected: Boolean) {
+private fun CounterContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = false) {
     val config = box.config as? CounterConfig ?: return
 
     Column(
@@ -198,6 +202,7 @@ private fun CounterContent(box: Box, isSelected: Boolean) {
         ) {
             IconButton(
                 onClick = { /* Handled by ViewModel */ },
+                enabled = !isMoveMode, // Disable in move mode
                 modifier = Modifier.size(24.dp)
             ) {
                 Icon(
@@ -213,6 +218,7 @@ private fun CounterContent(box: Box, isSelected: Boolean) {
             )
             IconButton(
                 onClick = { /* Handled by ViewModel */ },
+                enabled = !isMoveMode, // Disable in move mode
                 modifier = Modifier.size(24.dp)
             ) {
                 Icon(

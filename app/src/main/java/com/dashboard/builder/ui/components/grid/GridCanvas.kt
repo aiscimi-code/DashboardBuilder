@@ -118,6 +118,7 @@ fun GridCanvas(
                     box = box,
                     cellSize = actualCellSize,
                     isSelected = box.id == selectedBoxId,
+                    isMoveMode = isMoveMode,
                     onSelected = { onBoxSelected(box.id) },
                     onDoubleSelected = { onBoxDoubleSelected(box.id) }
                 )
@@ -159,25 +160,34 @@ private fun DraggableBoxItem(
                 width = cellSize * box.size.w,
                 height = cellSize * box.size.h
             )
-            .pointerInput(Unit) {
+            .pointerInput(isMoveMode) {
                 detectTapGestures(
                     onTap = {
-                        val currentTime = System.currentTimeMillis()
-                        if (currentTime - lastTapTime < 300) {
-                            onDoubleSelectedState()
-                        } else {
+                        // In move mode, tap always selects the box (no double-tap edit)
+                        if (isMoveMode) {
                             onSelectedState()
+                        } else {
+                            val currentTime = System.currentTimeMillis()
+                            if (currentTime - lastTapTime < 300) {
+                                onDoubleSelectedState()
+                            } else {
+                                onSelectedState()
+                            }
+                            lastTapTime = currentTime
                         }
-                        lastTapTime = currentTime
                     }
                 )
             }
             .then(
-                // In move mode, allow dragging even locked boxes. Disable resize in move mode.
-                if (!box.locked || isMoveMode) {
+                // In move mode, allow dragging any box (even locked). Disable resize in move mode.
+                if (isMoveMode || !box.locked) {
                     Modifier.pointerInput(isMoveMode) {
                         detectDragGestures(
                             onDragStart = { offset ->
+                                // In move mode, select the box when drag starts
+                                if (isMoveMode) {
+                                    onSelectedState()
+                                }
                                 totalDragX = 0f
                                 totalDragY = 0f
                             },
@@ -242,7 +252,7 @@ private fun DraggableBoxItem(
                 } else Modifier
             )
     ) {
-        BoxContent(box = box, isSelected = isSelected)
+        BoxContent(box = box, isSelected = isSelected, isMoveMode = isMoveMode)
     }
 }
 
@@ -251,6 +261,7 @@ private fun BoxItem(
     box: Box,
     cellSize: Dp,
     isSelected: Boolean,
+    isMoveMode: Boolean = false,
     onSelected: () -> Unit,
     onDoubleSelected: () -> Unit
 ) {
@@ -282,6 +293,6 @@ private fun BoxItem(
                 )
             }
     ) {
-        BoxContent(box = box, isSelected = isSelected)
+        BoxContent(box = box, isSelected = isSelected, isMoveMode = isMoveMode)
     }
 }
