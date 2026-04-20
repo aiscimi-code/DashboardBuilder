@@ -7,6 +7,8 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.OpenWith
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Undo
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,6 +24,8 @@ fun BottomMenu(
     onMoveClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onExportClick: () -> Unit,
+    onSaveClick: () -> Unit,
+    onUndoClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -94,6 +98,20 @@ fun BottomMenu(
                 modifier = Modifier.weight(1f)
             ) {
                 Icon(Icons.Default.Share, contentDescription = "Export")
+            }
+            // Save button
+            FilledTonalButton(
+                onClick = onSaveClick,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(Icons.Default.Save, contentDescription = "Save")
+            }
+            // Undo button
+            FilledTonalButton(
+                onClick = onUndoClick,
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(Icons.Default.Undo, contentDescription = "Undo")
             }
         }
     }

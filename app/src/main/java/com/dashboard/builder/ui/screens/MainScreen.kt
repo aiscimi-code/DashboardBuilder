@@ -23,6 +23,7 @@ import com.dashboard.builder.ui.components.TabBar
 import com.dashboard.builder.ui.components.grid.GridCanvas
 import com.dashboard.builder.ui.dialogs.AddBoxSheet
 import com.dashboard.builder.ui.dialogs.EditBoxSheet
+import com.dashboard.builder.ui.dialogs.ExportImportDialog
 import com.dashboard.builder.viewmodel.EditMode
 import com.dashboard.builder.viewmodel.MainViewModel
 import com.dashboard.builder.data.model.*
@@ -43,6 +44,7 @@ fun MainScreen(viewModel: MainViewModel) {
     var showAddSheet by remember { mutableStateOf(false) }
     var showEditSheet by remember { mutableStateOf(false) }
     var showFullScreenEditor by remember { mutableStateOf(false) }
+    var showExportImportDialog by remember { mutableStateOf(false) }
     
     // Track keyboard visibility
     val view = LocalView.current
@@ -97,8 +99,21 @@ fun MainScreen(viewModel: MainViewModel) {
                             uiState.selectedBoxId?.let { viewModel.deleteBox(it) }
                         },
                         onExportClick = {
+                            // Show export/import dialog
+                            showExportImportDialog = true
+                        },
+                        onSaveClick = {
                             val json = viewModel.exportToJson()
-                            Toast.makeText(context, "Exported: ${json.take(100)}...", Toast.LENGTH_SHORT).show()
+                            try {
+                                val file = java.io.File(context.filesDir, "dashboard_layout.json")
+                                file.writeText(json)
+                                Toast.makeText(context, "Layout saved to ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+                            } catch (e: Exception) {
+                                Toast.makeText(context, "Save failed: ${e.message}", Toast.LENGTH_LONG).show()
+                            }
+                        },
+                        onUndoClick = {
+                            viewModel.undo()
                         }
                     )
                 }
@@ -153,6 +168,9 @@ fun MainScreen(viewModel: MainViewModel) {
         }
     }
 
+    // State for export/import dialog
+    var showExportImportDialog by remember { mutableStateOf(false) }
+
     // Add box sheet
     if (showAddSheet) {
         AddBoxSheet(
@@ -180,6 +198,35 @@ fun MainScreen(viewModel: MainViewModel) {
         )
     }
     
+    // Full screen text editor
+
+    if (showExportImportDialog) {
+        ExportImportDialog(
+            context = context,
+            onDismiss = { showExportImportDialog = false },
+            onExport = { targetAll ->
+                val json = if (targetAll) viewModel.exportToJson() else viewModel.exportCurrentTabToJson()
+                try {
+                    val file = java.io.File(context.filesDir, if (targetAll) "dashboard_all.json" else "dashboard_current.json")
+                    file.writeText(json)
+                    Toast.makeText(context, "Exported to ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+                showExportImportDialog = false
+            },
+            onImport = { targetAll, jsonContent ->
+                try {
+                    viewModel.importFromJson(jsonContent)
+                    Toast.makeText(context, "Import successful", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Import failed: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+                showExportImportDialog = false
+            }
+        )
+    }
+
     // Full screen text editor
     if (showFullScreenEditor && selectedBox != null) {
         FullScreenTextEditor(

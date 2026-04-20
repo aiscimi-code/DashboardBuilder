@@ -27,6 +27,21 @@ enum class EditMode {
 }
 
 class MainViewModel : ViewModel() {
+    // Simple undo stack (stores previous app states)
+    private val undoStack = mutableListOf<AppState>()
+
+    private fun pushUndo(state: AppState) {
+        // Keep only last 10 states
+        if (undoStack.size >= 10) undoStack.removeAt(0)
+        undoStack.add(state)
+    }
+
+    fun undo() {
+        if (undoStack.isNotEmpty()) {
+            val previous = undoStack.removeAt(undoStack.lastIndex)
+            _uiState.update { it.copy(appState = previous) }
+        }
+    }
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -54,6 +69,8 @@ class MainViewModel : ViewModel() {
 
     // Add box
     fun addBox(type: BoxType) {
+        // Save current state for undo
+        pushUndo(_uiState.value.appState)
         _uiState.update { state ->
             val tab = state.appState.tabs.find { it.id == state.selectedTabId } ?: return@update state
             // Get default size based on type
@@ -79,6 +96,8 @@ class MainViewModel : ViewModel() {
 
     // Move box
     fun moveBox(boxId: String, newX: Int, newY: Int) {
+        // Save current state for undo
+        pushUndo(_uiState.value.appState)
         _uiState.update { state ->
             val tab = state.appState.tabs.find { it.id == state.selectedTabId } ?: return@update state
             val box = tab.boxes.find { it.id == boxId } ?: return@update state
@@ -106,6 +125,8 @@ class MainViewModel : ViewModel() {
 
     // Resize box
     fun resizeBox(boxId: String, newW: Int, newH: Int) {
+        // Save current state for undo
+        pushUndo(_uiState.value.appState)
         _uiState.update { state ->
             val tab = state.appState.tabs.find { it.id == state.selectedTabId } ?: return@update state
             val box = tab.boxes.find { it.id == boxId } ?: return@update state
@@ -137,6 +158,8 @@ class MainViewModel : ViewModel() {
 
     // Delete box
     fun deleteBox(boxId: String) {
+        // Save current state for undo
+        pushUndo(_uiState.value.appState)
         _uiState.update { state ->
             val tab = state.appState.tabs.find { it.id == state.selectedTabId } ?: return@update state
             val updatedBoxes = tab.boxes.filter { it.id != boxId }
@@ -154,18 +177,26 @@ class MainViewModel : ViewModel() {
 
     // Update box properties
     fun updateBoxLabel(boxId: String, label: String) {
+        // Save current state for undo
+        pushUndo(_uiState.value.appState)
         updateBox(boxId) { it.copy(label = label) }
     }
 
     fun updateBoxLocked(boxId: String, locked: Boolean) {
+        // Save current state for undo
+        pushUndo(_uiState.value.appState)
         updateBox(boxId) { it.copy(locked = locked) }
     }
 
     fun updateBoxStyle(boxId: String, backgroundColor: String) {
+        // Save current state for undo
+        pushUndo(_uiState.value.appState)
         updateBox(boxId) { it.copy(style = it.style.copy(backgroundColor = backgroundColor)) }
     }
 
     fun updateBoxConfig(boxId: String, config: BoxConfig) {
+        // Save current state for undo
+        pushUndo(_uiState.value.appState)
         updateBox(boxId) { it.copy(config = config) }
     }
 
@@ -252,6 +283,8 @@ class MainViewModel : ViewModel() {
 
     // Checkbox toggle
     fun toggleCheckbox(boxId: String, itemIndex: Int) {
+        // Save current state for undo
+        pushUndo(_uiState.value.appState
         _uiState.update { state ->
             val tab = state.appState.tabs.find { it.id == state.selectedTabId } ?: return@update state
             val box = tab.boxes.find { it.id == boxId } ?: return@update state
@@ -273,6 +306,8 @@ class MainViewModel : ViewModel() {
 
     // Add action to box
     fun addAction(boxId: String, action: Action) {
+        // Save current state for undo
+        pushUndo(_uiState.value.appState
         updateBox(boxId) { box ->
             box.copy(actions = box.actions + action)
         }
@@ -280,6 +315,8 @@ class MainViewModel : ViewModel() {
 
     // Remove action from box
     fun removeAction(boxId: String, actionIndex: Int) {
+        // Save current state for undo
+        pushUndo(_uiState.value.appState
         updateBox(boxId) { box ->
             box.copy(actions = box.actions.filterIndexed { index, _ -> index != actionIndex })
         }
@@ -291,6 +328,17 @@ class MainViewModel : ViewModel() {
             AppState.serializer(),
             _uiState.value.appState
         )
+    }
+
+    // Export only the current tab
+    fun exportCurrentTabToJson(): String {
+        val currentTabId = _uiState.value.selectedTabId
+        val currentTab = _uiState.value.appState.tabs.find { it.id == currentTabId }
+        return if (currentTab != null) {
+            kotlinx.serialization.json.Json.encodeToString(com.dashboard.builder.data.model.Tab.serializer(), currentTab)
+        } else {
+            ""
+        }
     }
 
     // Import JSON
