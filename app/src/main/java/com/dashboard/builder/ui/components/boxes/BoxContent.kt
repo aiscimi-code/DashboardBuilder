@@ -42,21 +42,22 @@ fun BoxContent(
             .padding(4.dp)
     ) {
         when (box.type) {
-            BoxType.INPUT -> InputBoxContent(box)
-            BoxType.TEXT -> TextBoxContent(box)
+            BoxType.INPUT -> InputBoxContent(box, isSelected)
+            BoxType.TEXT -> TextBoxContent(box, isSelected)
             BoxType.BUTTON -> ButtonBoxContent(box)
-            BoxType.CHECKBOX_LIST -> CheckboxListContent(box)
-            BoxType.COUNTER -> CounterContent(box)
+            BoxType.CHECKBOX_LIST -> CheckboxListContent(box, isSelected)
+            BoxType.COUNTER -> CounterContent(box, isSelected)
         }
     }
 }
 
 @Composable
-private fun InputBoxContent(box: Box) {
+private fun InputBoxContent(box: Box, isSelected: Boolean) {
     val config = box.config as? InputConfig ?: return
 
     Column(modifier = Modifier.fillMaxSize()) {
-        if (box.label.isNotEmpty()) {
+        // Only show label when selected
+        if (isSelected && box.label.isNotEmpty()) {
             Text(
                 text = box.label,
                 fontSize = 10.sp,
@@ -88,11 +89,12 @@ private fun InputBoxContent(box: Box) {
 }
 
 @Composable
-private fun TextBoxContent(box: Box) {
+private fun TextBoxContent(box: Box, isSelected: Boolean) {
     val config = box.config as? TextConfig ?: return
 
     Column(modifier = Modifier.fillMaxSize()) {
-        if (box.label.isNotEmpty()) {
+        // Only show label when selected
+        if (isSelected && box.label.isNotEmpty()) {
             Text(
                 text = box.label,
                 fontSize = 10.sp,
@@ -111,18 +113,12 @@ private fun TextBoxContent(box: Box) {
 private fun ButtonBoxContent(box: Box) {
     val config = box.config as? ButtonConfig ?: return
 
+    // Buttons don't show labels - only the button text
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (box.label.isNotEmpty()) {
-            Text(
-                text = box.label,
-                fontSize = 10.sp,
-                modifier = Modifier.padding(bottom = 2.dp)
-            )
-        }
         Button(
             onClick = { /* Handled by ViewModel */ },
             modifier = Modifier.fillMaxWidth()
@@ -133,11 +129,12 @@ private fun ButtonBoxContent(box: Box) {
 }
 
 @Composable
-private fun CheckboxListContent(box: Box) {
+private fun CheckboxListContent(box: Box, isSelected: Boolean) {
     val config = box.config as? CheckboxListConfig ?: return
 
     Column(modifier = Modifier.fillMaxSize()) {
-        if (box.label.isNotEmpty()) {
+        // Only show label when selected
+        if (isSelected && box.label.isNotEmpty()) {
             Text(
                 text = box.label,
                 fontSize = 10.sp,
@@ -179,7 +176,7 @@ private fun CheckboxListContent(box: Box) {
 }
 
 @Composable
-private fun CounterContent(box: Box) {
+private fun CounterContent(box: Box, isSelected: Boolean) {
     val config = box.config as? CounterConfig ?: return
 
     Column(
@@ -187,7 +184,8 @@ private fun CounterContent(box: Box) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (box.label.isNotEmpty()) {
+        // Only show label when selected
+        if (isSelected && box.label.isNotEmpty()) {
             Text(
                 text = box.label,
                 fontSize = 10.sp,

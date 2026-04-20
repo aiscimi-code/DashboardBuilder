@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.OpenWith
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ fun BottomMenu(
     hasSelection: Boolean,
     onAddClick: () -> Unit,
     onEditClick: () -> Unit,
+    onMoveClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onExportClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -41,7 +43,8 @@ fun BottomMenu(
                         MaterialTheme.colorScheme.primary
                     else
                         MaterialTheme.colorScheme.surfaceVariant
-                )
+                ),
+                modifier = Modifier.weight(1f)
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
@@ -55,21 +58,41 @@ fun BottomMenu(
                         MaterialTheme.colorScheme.primary
                     else
                         MaterialTheme.colorScheme.surfaceVariant
-                )
+                ),
+                modifier = Modifier.weight(1f)
             ) {
                 Icon(Icons.Default.Edit, contentDescription = "Edit")
+            }
+
+            // Move button
+            FilledTonalButton(
+                onClick = onMoveClick,
+                enabled = hasSelection,
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = if (currentMode == EditMode.MOVE)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.surfaceVariant
+                ),
+                modifier = Modifier.weight(1f)
+            ) {
+                Icon(Icons.Default.OpenWith, contentDescription = "Move")
             }
 
             // Delete button
             FilledTonalButton(
                 onClick = onDeleteClick,
-                enabled = hasSelection
+                enabled = hasSelection,
+                modifier = Modifier.weight(1f)
             ) {
                 Icon(Icons.Default.Delete, contentDescription = "Delete")
             }
 
             // Export button
-            FilledTonalButton(onClick = onExportClick) {
+            FilledTonalButton(
+                onClick = onExportClick,
+                modifier = Modifier.weight(1f)
+            ) {
                 Icon(Icons.Default.Share, contentDescription = "Export")
             }
         }

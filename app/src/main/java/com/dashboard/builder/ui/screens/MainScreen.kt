@@ -1,11 +1,15 @@
 package com.dashboard.builder.ui.screens
 
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dashboard.builder.ui.components.BottomMenu
@@ -28,35 +32,60 @@ fun MainScreen(viewModel: MainViewModel) {
     var showAddSheet by remember { mutableStateOf(false) }
     var showEditSheet by remember { mutableStateOf(false) }
 
+    // Track keyboard visibility
+    val view = LocalView.current
+    var isKeyboardVisible by remember { mutableStateOf(false) }
+    
+    DisposableEffect(view) {
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            val rect = android.graphics.Rect()
+            view.getWindowVisibleDisplayFrame(rect)
+            val screenHeight = view.height
+            val keypadHeight = screenHeight - rect.bottom
+            isKeyboardVisible = keypadHeight > screenHeight * 0.15
+        }
+        view.viewTreeObserver.addOnGlobalLayoutListener(listener)
+        onDispose {
+            view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
+    }
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Dashboard Builder") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            Column {
+                TopAppBar(
+                    title = { Text("Dashboard Builder") },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 )
-            )
-        },
-        bottomBar = {
-            BottomMenu(
-                currentMode = uiState.mode,
-                hasSelection = uiState.selectedBoxId != null,
-                onAddClick = { showAddSheet = true },
-                onEditClick = {
-                    if (uiState.selectedBoxId != null) {
-                        showEditSheet = true
-                    }
-                },
-                onDeleteClick = {
-                    uiState.selectedBoxId?.let { viewModel.deleteBox(it) }
-                },
-                onExportClick = {
-                    val json = viewModel.exportToJson()
-                    // In a real app, would share or save the file
-                    Toast.makeText(context, "Exported: ${json.take(100)}...", Toast.LENGTH_SHORT).show()
+                // Options bar at top when keyboard is NOT visible
+                if (!isKeyboardVisible) {
+                    BottomMenu(
+                        currentMode = uiState.mode,
+                        hasSelection = uiState.selectedBoxId != null,
+                        onAddClick = { showAddSheet = true },
+                        onEditClick = {
+                            if (uiState.selectedBoxId != null) {
+                                showEditSheet = true
+                            }
+                        },
+                        onMoveClick = {
+                            if (uiState.selectedBoxId != null) {
+                                viewModel.setMode(EditMode.MOVE)
+                            }
+                        },
+                        onDeleteClick = {
+                            uiState.selectedBoxId?.let { viewModel.deleteBox(it) }
+                        },
+                        onExportClick = {
+                            val json = viewModel.exportToJson()
+                            Toast.makeText(context, "Exported: ${json.take(100)}...", Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 }
-            )
+            }
         }
     ) { paddingValues ->
         var gridAvailableWidth by remember { mutableStateOf(0.dp) }
@@ -82,6 +111,7 @@ fun MainScreen(viewModel: MainViewModel) {
                         tab = currentTab,
                         selectedBoxId = uiState.selectedBoxId,
                         availableWidth = gridAvailableWidth,
+                        isMoveMode = uiState.mode == EditMode.MOVE,
                         onBoxSelected = { boxId ->
                             viewModel.selectBox(boxId)
                         },
@@ -104,13 +134,13 @@ fun MainScreen(viewModel: MainViewModel) {
         AddBoxSheet(
             onDismiss = { showAddSheet = false },
             onBoxTypeSelected = { boxType ->
-                viewModel.addBox(boxType)
+                viewModel.addBox(type = boxType)
                 showAddSheet = false
             }
         )
     }
 
-    // Edit box sheet
+    // Edit box sheet (show when keyboard is visible or when manually opened)
     if (showEditSheet && selectedBox != null && currentTab != null) {
         EditBoxSheet(
             box = selectedBox,

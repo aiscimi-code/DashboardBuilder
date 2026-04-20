@@ -22,6 +22,7 @@ enum class EditMode {
     VIEW,
     ADD,
     EDIT,
+    MOVE,
     LINK
 }
 

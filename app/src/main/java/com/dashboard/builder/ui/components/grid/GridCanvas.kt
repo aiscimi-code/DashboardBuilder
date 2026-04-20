@@ -27,6 +27,7 @@ fun GridCanvas(
     selectedBoxId: String?,
     cellSize: Dp = 80.dp,
     availableWidth: Dp = 0.dp,
+    isMoveMode: Boolean = false,
     onBoxSelected: (String?) -> Unit,
     onBoxMoved: (String, Int, Int) -> Unit,
     onBoxResized: (String, Int, Int) -> Unit,
@@ -95,6 +96,7 @@ fun GridCanvas(
                     cellSize = cellSize,
                     cellSizePx = cellSizePx,
                     isSelected = box.id == selectedBoxId,
+                    isMoveMode = isMoveMode,
                     onSelected = { onBoxSelected(box.id) },
                     onMoved = { dx, dy ->
                         val newX = box.position.x + (dx / cellSizePx).toInt()
@@ -128,6 +130,7 @@ private fun DraggableBoxItem(
     cellSize: Dp,
     cellSizePx: Float,
     isSelected: Boolean,
+    isMoveMode: Boolean = false,
     onSelected: () -> Unit,
     onMoved: (Float, Float) -> Unit,
     onResized: (Float, Float) -> Unit
@@ -148,7 +151,8 @@ private fun DraggableBoxItem(
                 height = cellSize * box.size.h
             )
             .then(
-                if (!box.locked) {
+                // In move mode, allow dragging even locked boxes. Otherwise only unlocked.
+                if (!box.locked || isMoveMode) {
                     Modifier.pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = { offset ->
