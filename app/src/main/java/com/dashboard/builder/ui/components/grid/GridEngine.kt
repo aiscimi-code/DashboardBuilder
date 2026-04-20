@@ -3,6 +3,8 @@ package com.dashboard.builder.ui.components.grid
 import com.dashboard.builder.data.model.Box
 import com.dashboard.builder.data.model.Position
 import com.dashboard.builder.data.model.Size
+import com.dashboard.builder.data.model.BoxType
+import com.dashboard.builder.data.model.TextConfig
 
 object GridEngine {
     const val COLUMNS = 10
@@ -28,22 +30,27 @@ object GridEngine {
     }
 
     /**
-     * Check if a box can be placed at given position
+     * Check if a box can be placed at given position (considering all existing boxes except the box being placed)
      */
-    fun canPlace(box: Box, newX: Int, newY: Int, boxes: List<Box>): Boolean {
+    fun canPlace(box: Box, newX: Int, newY: Int, allBoxes: List<Box>): Boolean {
         // Bounds check
         if (newX < 0 || newY < 0 || newX + box.size.w > COLUMNS || newY + box.size.h > ROWS) {
             return false
         }
 
-        val grid = buildGrid(boxes.filter { it.id != box.id && !it.floating })
+        // Build grid excluding the current box (if it already exists)
+        val existingBoxes = allBoxes.filter { it.id != box.id && !it.floating }
+        val grid = buildGrid(existingBoxes)
 
+        // Check for overlap with any box (including unlocked ones)
         for (x in newX until newX + box.size.w) {
             for (y in newY until newY + box.size.h) {
-                val occupant = grid[y][x]
-                if (occupant != null) {
-                    val other = boxes.find { it.id == occupant }
-                    if (other?.locked == true) return false
+                if (x in 0 until COLUMNS && y in 0 until ROWS) {
+                    val occupant = grid[y][x]
+                    if (occupant != null) {
+                        // There's a box already there
+                        return false
+                    }
                 }
             }
         }
@@ -55,20 +62,40 @@ object GridEngine {
      * Find the first available position for a box
      */
     fun findFirstAvailable(boxes: List<Box>, size: Size): Position {
-        for (y in 0 until ROWS) {
-            for (x in 0 until COLUMNS) {
+        // Start from top-left, find first completely empty spot
+        for (y in 0 until ROWS - size.h + 1) {
+            for (x in 0 until COLUMNS - size.w + 1) {
                 val tempBox = Box(
                     id = "temp",
-                    type = com.dashboard.builder.data.model.BoxType.TEXT,
+                    type = BoxType.TEXT,
                     position = Position(x, y),
                     size = size,
-                    config = com.dashboard.builder.data.model.TextConfig()
+                    config = TextConfig()
                 )
                 if (canPlace(tempBox, x, y, boxes)) {
                     return Position(x, y)
                 }
             }
         }
+        
+        // If no spot found in normal position, try to find any spot (allow overlap with non-locked)
+        for (y in 0 until ROWS) {
+            for (x in 0 until COLUMNS) {
+                if (x + size.w <= COLUMNS && y + size.h <= ROWS) {
+                    // Check if only locked boxes are in the way
+                    val blocked = boxes.filter { !it.floating }.any { box ->
+                        !box.locked && isOverlapping(
+                            x, y, size.w, size.h,
+                            box.position.x, box.position.y, box.size.w, box.size.h
+                        )
+                    }
+                    if (!blocked) {
+                        return Position(x, y)
+                    }
+                }
+            }
+        }
+        
         return Position(0, 0) // Fallback
     }
 

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,8 +21,6 @@ import com.dashboard.builder.viewmodel.MainViewModel
 fun MainScreen(viewModel: MainViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
 
     val currentTab = uiState.appState.tabs.find { it.id == uiState.selectedTabId }
     val selectedBox = currentTab?.boxes?.find { it.id == uiState.selectedBoxId }
@@ -62,31 +59,42 @@ fun MainScreen(viewModel: MainViewModel) {
             )
         }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            // Tab bar
-            TabBar(
-                state = uiState,
-                onTabSelected = { viewModel.selectTab(it) }
-            )
+        var gridAvailableWidth by remember { mutableStateOf(0.dp) }
+        
+        // Measure available width using BoxWithConstraints
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            gridAvailableWidth = maxWidth
             
-            // Grid
-            if (currentTab != null) {
-                GridCanvas(
-                    tab = currentTab,
-                    selectedBoxId = uiState.selectedBoxId,
-                    availableWidth = screenWidth,
-                    onBoxSelected = { boxId ->
-                        viewModel.selectBox(boxId)
-                    },
-                    onBoxMoved = { boxId, x, y ->
-                        viewModel.moveBox(boxId, x, y)
-                    },
-                    onBoxResized = { boxId, w, h ->
-                        viewModel.resizeBox(boxId, w, h)
-                    },
-                    modifier = Modifier
-                        .fillMaxSize()
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Tab bar
+                TabBar(
+                    state = uiState,
+                    onTabSelected = { viewModel.selectTab(it) }
                 )
+                
+                // Grid - use available width
+                if (currentTab != null) {
+                    GridCanvas(
+                        tab = currentTab,
+                        selectedBoxId = uiState.selectedBoxId,
+                        availableWidth = gridAvailableWidth,
+                        onBoxSelected = { boxId ->
+                            viewModel.selectBox(boxId)
+                        },
+                        onBoxMoved = { boxId, x, y ->
+                            viewModel.moveBox(boxId, x, y)
+                        },
+                        onBoxResized = { boxId, w, h ->
+                            viewModel.resizeBox(boxId, w, h)
+                        },
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                }
             }
         }
     }

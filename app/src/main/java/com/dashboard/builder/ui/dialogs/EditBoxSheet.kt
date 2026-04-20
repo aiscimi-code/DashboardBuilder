@@ -23,12 +23,15 @@ fun EditBoxSheet(
     onUpdateLocked: (Boolean) -> Unit,
     onUpdateBackgroundColor: (String) -> Unit,
     onUpdateConfig: (BoxConfig) -> Unit,
+    onUpdateSize: (Int, Int) -> Unit,
     onAddAction: (Action) -> Unit,
     onRemoveAction: (Int) -> Unit
 ) {
     var label by remember { mutableStateOf(box.label) }
     var locked by remember { mutableStateOf(box.locked) }
     var backgroundColor by remember { mutableStateOf(box.style.backgroundColor) }
+    var boxWidth by remember { mutableStateOf(box.size.w.toString()) }
+    var boxHeight by remember { mutableStateOf(box.size.h.toString()) }
     var showActionDialog by remember { mutableStateOf(false) }
 
     ModalBottomSheet(
@@ -79,6 +82,27 @@ fun EditBoxSheet(
                 label = { Text("Background Color (hex)") },
                 modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Size controls
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = boxWidth,
+                    onValueChange = { boxWidth = it.filter { c -> c.isDigit() }.take(2) },
+                    label = { Text("Width (1-10)") },
+                    modifier = Modifier.weight(1f)
+                )
+                OutlinedTextField(
+                    value = boxHeight,
+                    onValueChange = { boxHeight = it.filter { c -> c.isDigit() }.take(2) },
+                    label = { Text("Height (1-32)") },
+                    modifier = Modifier.weight(1f)
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -184,6 +208,12 @@ fun EditBoxSheet(
                     onUpdateLabel(label)
                     onUpdateLocked(locked)
                     onUpdateBackgroundColor(backgroundColor)
+                    // Update size
+                    val w = boxWidth.toIntOrNull()?.coerceIn(1, 10) ?: box.size.w
+                    val h = boxHeight.toIntOrNull()?.coerceIn(1, 32) ?: box.size.h
+                    if (w != box.size.w || h != box.size.h) {
+                        onUpdateSize(w, h)
+                    }
                     onDismiss()
                 },
                 modifier = Modifier.fillMaxWidth()
