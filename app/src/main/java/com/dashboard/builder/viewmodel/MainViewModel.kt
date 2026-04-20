@@ -284,7 +284,7 @@ class MainViewModel : ViewModel() {
     // Checkbox toggle
     fun toggleCheckbox(boxId: String, itemIndex: Int) {
         // Save current state for undo
-        pushUndo(_uiState.value.appState
+        pushUndo(_uiState.value.appState)
         _uiState.update { state ->
             val tab = state.appState.tabs.find { it.id == state.selectedTabId } ?: return@update state
             val box = tab.boxes.find { it.id == boxId } ?: return@update state
@@ -307,7 +307,7 @@ class MainViewModel : ViewModel() {
     // Add action to box
     fun addAction(boxId: String, action: Action) {
         // Save current state for undo
-        pushUndo(_uiState.value.appState
+        pushUndo(_uiState.value.appState)
         updateBox(boxId) { box ->
             box.copy(actions = box.actions + action)
         }
@@ -316,7 +316,7 @@ class MainViewModel : ViewModel() {
     // Remove action from box
     fun removeAction(boxId: String, actionIndex: Int) {
         // Save current state for undo
-        pushUndo(_uiState.value.appState
+        pushUndo(_uiState.value.appState)
         updateBox(boxId) { box ->
             box.copy(actions = box.actions.filterIndexed { index, _ -> index != actionIndex })
         }

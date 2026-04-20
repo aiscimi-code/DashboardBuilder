@@ -168,9 +168,6 @@ fun MainScreen(viewModel: MainViewModel) {
         }
     }
 
-    // State for export/import dialog
-    var showExportImportDialog by remember { mutableStateOf(false) }
-
     // Add box sheet
     if (showAddSheet) {
         AddBoxSheet(
