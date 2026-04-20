@@ -1,7 +1,6 @@
 package com.dashboard.builder.ui.components.grid
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
@@ -39,7 +38,6 @@ fun GridCanvas(
     val density = LocalDensity.current
     
     // Calculate cell size based on available width - fit 10 columns to screen exactly
-    // Use minimum of availableWidth/10 or default cellSize, but prefer smaller to fit screen
     val actualCellSize = if (availableWidth.value > 0) {
         availableWidth / GridEngine.COLUMNS
     } else {
@@ -94,20 +92,21 @@ fun GridCanvas(
             tab.boxes.filter { !it.floating }.forEach { box ->
                 DraggableBoxItem(
                     box = box,
-                    cellSize = cellSize,
+                    cellSize = actualCellSize,
                     cellSizePx = cellSizePx,
                     isSelected = box.id == selectedBoxId,
                     isMoveMode = isMoveMode,
                     onSelected = { onBoxSelected(box.id) },
                     onDoubleSelected = { onBoxDoubleSelected(box.id) },
-                    onMoved = { dx, dy ->
-                        val newX = box.position.x + (dx / cellSizePx).toInt()
-                        val newY = box.position.y + (dy / cellSizePx).toInt()
+                    onMoved = { dxPx, dyPx ->
+                        // Convert pixel delta to cell delta
+                        val newX = box.position.x + (dxPx / cellSizePx).toInt()
+                        val newY = box.position.y + (dyPx / cellSizePx).toInt()
                         onBoxMoved(box.id, newX, newY)
                     },
-                    onResized = { dw, dh ->
-                        val newW = box.size.w + (dw / cellSizePx).toInt()
-                        val newH = box.size.h + (dh / cellSizePx).toInt()
+                    onResized = { dwPx, dhPx ->
+                        val newW = box.size.w + (dwPx / cellSizePx).toInt()
+                        val newH = box.size.h + (dhPx / cellSizePx).toInt()
                         onBoxResized(box.id, newW, newH)
                     }
                 )
@@ -117,7 +116,7 @@ fun GridCanvas(
             tab.boxes.filter { it.floating }.forEach { box ->
                 BoxItem(
                     box = box,
-                    cellSize = cellSize,
+                    cellSize = actualCellSize,
                     isSelected = box.id == selectedBoxId,
                     onSelected = { onBoxSelected(box.id) },
                     onDoubleSelected = { onBoxDoubleSelected(box.id) }
@@ -139,12 +138,15 @@ private fun DraggableBoxItem(
     onMoved: (Float, Float) -> Unit,
     onResized: (Float, Float) -> Unit
 ) {
-    var isDragging by remember { mutableStateOf(false) }
-    var isResizing by remember { mutableStateOf(false) }
+    // Use rememberUpdatedState to avoid stale closures
+    val cellSizePxState by rememberUpdatedState(cellSizePx)
+    val onMovedState by rememberUpdatedState(onMoved)
+    val onResizedState by rememberUpdatedState(onResized)
+    val onSelectedState by rememberUpdatedState(onSelected)
+    val onDoubleSelectedState by rememberUpdatedState(onDoubleSelected)
+    
     var totalDragX by remember { mutableFloatStateOf(0f) }
     var totalDragY by remember { mutableFloatStateOf(0f) }
-    
-    // Track last tap time for double-tap detection
     var lastTapTime by remember { mutableLongStateOf(0L) }
 
     Box(
@@ -162,57 +164,77 @@ private fun DraggableBoxItem(
                     onTap = {
                         val currentTime = System.currentTimeMillis()
                         if (currentTime - lastTapTime < 300) {
-                            // Double tap
-                            onDoubleSelected()
+                            onDoubleSelectedState()
                         } else {
-                            // Single tap
-                            onSelected()
+                            onSelectedState()
                         }
                         lastTapTime = currentTime
                     }
                 )
             }
             .then(
-                // In move mode, allow dragging even locked boxes. Otherwise only unlocked.
+                // In move mode, allow dragging even locked boxes. Disable resize in move mode.
                 if (!box.locked || isMoveMode) {
-                    Modifier.pointerInput(Unit) {
+                    Modifier.pointerInput(isMoveMode) {
                         detectDragGestures(
                             onDragStart = { offset ->
-                                val boxWidth = box.size.w * cellSizePx
-                                val boxHeight = box.size.h * cellSizePx
-                                isResizing = offset.x > boxWidth - 48 && offset.y > boxHeight - 48
                                 totalDragX = 0f
                                 totalDragY = 0f
-                                isDragging = true
                             },
                             onDragEnd = {
-                                isDragging = false
-                                isResizing = false
+                                totalDragX = 0f
+                                totalDragY = 0f
+                            },
+                            onDragCancel = {
+                                totalDragX = 0f
+                                totalDragY = 0f
                             },
                             onDrag = { change, dragAmount ->
                                 change.consume()
                                 totalDragX += dragAmount.x
                                 totalDragY += dragAmount.y
                                 
-                                // Only move/resize when drag exceeds half a cell
-                                if (isResizing) {
-                                    if (kotlin.math.abs(totalDragX) >= cellSizePx / 2f || kotlin.math.abs(totalDragY) >= cellSizePx / 2f) {
-                                        onResized(
-                                            if (totalDragX > 0) cellSizePx else -cellSizePx,
-                                            if (totalDragY > 0) cellSizePx else -cellSizePx
-                                        )
-                                        totalDragX = 0f
-                                        totalDragY = 0f
+                                // Disable resize in move mode
+                                if (!isMoveMode) {
+                                    val boxWidth = box.size.w * cellSizePxState
+                                    val boxHeight = box.size.h * cellSizePxState
+                                    val isResizing = change.position.x > boxWidth - 48 && 
+                                                    change.position.y > boxHeight - 48
+                                    
+                                    if (isResizing) {
+                                        // Resize: only move when drag exceeds half a cell
+                                        if (kotlin.math.abs(totalDragX) >= cellSizePxState / 2f) {
+                                            onResizedState(
+                                                if (totalDragX > 0) cellSizePxState else -cellSizePxState,
+                                                0f
+                                            )
+                                            totalDragX = 0f
+                                        }
+                                        if (kotlin.math.abs(totalDragY) >= cellSizePxState / 2f) {
+                                            onResizedState(
+                                                0f,
+                                                if (totalDragY > 0) cellSizePxState else -cellSizePxState
+                                            )
+                                            totalDragY = 0f
+                                        }
+                                        return@detectDragGestures
                                     }
-                                } else {
-                                    if (kotlin.math.abs(totalDragX) >= cellSizePx / 2f || kotlin.math.abs(totalDragY) >= cellSizePx / 2f) {
-                                        onMoved(
-                                            if (totalDragX > 0) 1f else -1f,
-                                            if (totalDragY > 0) 1f else -1f
-                                        )
-                                        totalDragX = 0f
-                                        totalDragY = 0f
-                                    }
+                                }
+                                
+                                // Move: only move when drag exceeds half a cell - track axes independently
+                                if (kotlin.math.abs(totalDragX) >= cellSizePxState / 2f) {
+                                    onMovedState(
+                                        if (totalDragX > 0) cellSizePxState else -cellSizePxState,
+                                        0f
+                                    )
+                                    totalDragX = 0f
+                                }
+                                if (kotlin.math.abs(totalDragY) >= cellSizePxState / 2f) {
+                                    onMovedState(
+                                        0f,
+                                        if (totalDragY > 0) cellSizePxState else -cellSizePxState
+                                    )
+                                    totalDragY = 0f
                                 }
                             }
                         )
@@ -233,6 +255,8 @@ private fun BoxItem(
     onDoubleSelected: () -> Unit
 ) {
     var lastTapTime by remember { mutableLongStateOf(0L) }
+    val onSelectedState by rememberUpdatedState(onSelected)
+    val onDoubleSelectedState by rememberUpdatedState(onDoubleSelected)
     
     Box(
         modifier = Modifier
@@ -249,9 +273,9 @@ private fun BoxItem(
                     onTap = {
                         val currentTime = System.currentTimeMillis()
                         if (currentTime - lastTapTime < 300) {
-                            onDoubleSelected()
+                            onDoubleSelectedState()
                         } else {
-                            onSelected()
+                            onSelectedState()
                         }
                         lastTapTime = currentTime
                     }
