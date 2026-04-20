@@ -36,6 +36,12 @@ A native Android application for building customizable dashboards with a drag-an
 - Drag: Move or resize box (in Move mode)
 - Bottom menu: Add, Edit, Move, Delete, Export
 
+### 5. Box-to-Box Actions (EventEngine)
+The app supports inter-box communication via the EventEngine:
+- **Events:** ON_CLICK, ON_TEXT_CHANGE
+- **Actions:** SET_TEXT, ADD_TO_LIST, ADD_TO_CHECKBOX_LIST, INCREMENT_COUNTER, DECREMENT_COUNTER
+- **Data Sources:** Static values or values from other boxes
+
 ## Project Structure
 
 ```
@@ -88,11 +94,51 @@ app/src/main/java/com/dashboard/builder/
 
 1. **10-Column Responsive Grid** - Automatically sizes to fit screen width
 2. **Drag-and-Drop** - Move boxes by dragging in Move mode
-3. **Double-Tap Edit** - Quick access to edit dialog
-4. **Full-Screen Text Editor** - For editing TEXT and INPUT box content
-5. **Box-to-Box Actions** - Configure actions (e.g., button increments counter)
-6. **Tab System** - Support for multiple dashboard tabs (A-J)
-7. **JSON Export/Import** - Save and load dashboard configurations
+3. **Move Mode** - Tap any box to select, drag to move. All inputs/buttons disabled
+4. **Double-Tap Edit** - Quick access to edit dialog
+5. **Full-Screen Text Editor** - For editing TEXT and INPUT box content
+6. **Box-to-Box Actions** - Configure actions (e.g., button increments counter)
+7. **Tab System** - Multiple dashboard tabs (A-J)
+8. **JSON Export/Import** - Save and load dashboard configurations
+
+## Default Sample Data
+
+### Tab A - Training Dashboard (Light Theme)
+A personal trainer demo dashboard with:
+- Workout stats counters (Workouts, Calories, Steps)
+- Exercise checklist
+- Action buttons (Start Workout, View Progress)
+- Notes input field
+
+### Tab B - Workout Dashboard (Dark Theme)
+An advanced workout planning dashboard based on the "cockpit" design pattern:
+
+🧭 **At-a-Glance Strip**
+- Workout Type button (cycles through Strength/Cardio/Mobility)
+- Duration counter
+- Focus area text display
+
+❤️ **Body Status**
+- Sleep hours counter
+- Energy level (1-5)
+- Readiness score (color-coded)
+- Current streak counter
+
+🏋️ **Workout Detail**
+- Exercise checkbox lists (Bench Press, Incline DB)
+- Sets × Reps × Weight tracking
+
+⏱️ **Timer & Controls**
+- Rest timer (seconds)
+- Sets completed counter
+- Complete Workout button (linked action: increments weekly count)
+
+📊 **Quick Stats**
+- Workouts this week
+- Total volume (kg)
+- Notes input
+
+**Linked Boxes:** Click "Complete" → automatically increments "This Week" counter.
 
 ## Building
 
@@ -102,10 +148,10 @@ app/src/main/java/com/dashboard/builder/
 
 APK output: `app/build/outputs/apk/debug/app-debug.apk`
 
-## Default Sample Data
+## Version History
 
-Tab A includes a personal trainer dashboard with:
-- Workout stats counters (Workouts, Calories, Steps)
-- Exercise checklist
-- Action buttons (Start Workout, View Progress)
-- Notes input field
+- **v1.0.9** - Tab B workout dashboard with linked boxes (dark theme)
+- **v1.0.8** - Move mode: tap any box to select, disable inputs/buttons in move mode
+- **v1.0.7** - Grid drag-drop bug fixes (movement, resize, stale closures)
+- **v1.0.6** - LocalConfiguration for accurate screen width
+- **v1.0.5** - Initial release with basic grid and box types
