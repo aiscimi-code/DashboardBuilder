@@ -5,16 +5,13 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.TextStyle
@@ -35,6 +32,10 @@ import com.dashboard.builder.data.model.*
 fun MainScreen(viewModel: MainViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+
+    // Get actual screen width in dp
+    val screenWidthDp = configuration.screenWidthDp.dp
 
     val currentTab = uiState.appState.tabs.find { it.id == uiState.selectedTabId }
     val selectedBox = currentTab?.boxes?.find { it.id == uiState.selectedBoxId }
@@ -104,50 +105,44 @@ fun MainScreen(viewModel: MainViewModel) {
             }
         }
     ) { paddingValues ->
-        // Use BoxWithConstraints to get actual available width
-        BoxWithConstraints(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            val availableWidth = maxWidth
+            // Tab bar
+            TabBar(
+                state = uiState,
+                onTabSelected = { viewModel.selectTab(it) }
+            )
             
-            Column(modifier = Modifier.fillMaxSize()) {
-                // Tab bar
-                TabBar(
-                    state = uiState,
-                    onTabSelected = { viewModel.selectTab(it) }
+            // Grid - use actual screen width to fit 10 columns
+            if (currentTab != null) {
+                GridCanvas(
+                    tab = currentTab,
+                    selectedBoxId = uiState.selectedBoxId,
+                    availableWidth = screenWidthDp,
+                    isMoveMode = uiState.mode == EditMode.MOVE,
+                    onBoxSelected = { boxId ->
+                        viewModel.selectBox(boxId)
+                    },
+                    onBoxDoubleSelected = { boxId ->
+                        viewModel.selectBox(boxId)
+                        val box = currentTab.boxes.find { it.id == boxId }
+                        if (box?.type == BoxType.TEXT) {
+                            showFullScreenEditor = true
+                        } else {
+                            showEditSheet = true
+                        }
+                    },
+                    onBoxMoved = { boxId, x, y ->
+                        viewModel.moveBox(boxId, x, y)
+                    },
+                    onBoxResized = { boxId, w, h ->
+                        viewModel.resizeBox(boxId, w, h)
+                    },
+                    modifier = Modifier.fillMaxSize()
                 )
-                
-                // Grid - use available width to fit 10 columns
-                if (currentTab != null) {
-                    GridCanvas(
-                        tab = currentTab,
-                        selectedBoxId = uiState.selectedBoxId,
-                        availableWidth = availableWidth,
-                        isMoveMode = uiState.mode == EditMode.MOVE,
-                        onBoxSelected = { boxId ->
-                            viewModel.selectBox(boxId)
-                        },
-                        onBoxDoubleSelected = { boxId ->
-                            viewModel.selectBox(boxId)
-                            val box = currentTab.boxes.find { it.id == boxId }
-                            if (box?.type == BoxType.TEXT) {
-                                showFullScreenEditor = true
-                            } else {
-                                showEditSheet = true
-                            }
-                        },
-                        onBoxMoved = { boxId, x, y ->
-                            viewModel.moveBox(boxId, x, y)
-                        },
-                        onBoxResized = { boxId, w, h ->
-                            viewModel.resizeBox(boxId, w, h)
-                        },
-                        modifier = Modifier
-                            .fillMaxSize()
-                    )
-                }
             }
         }
     }
@@ -215,7 +210,6 @@ private fun FullScreenTextEditor(
             }
         )
     }
-    var showTextField by remember { mutableStateOf(true) }
 
     Scaffold(
         topBar = {
