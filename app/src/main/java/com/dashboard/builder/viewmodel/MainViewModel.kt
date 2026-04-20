@@ -191,13 +191,21 @@ class MainViewModel : ViewModel() {
             val tab = state.appState.tabs.find { it.id == state.selectedTabId } ?: return@update state
             val box = tab.boxes.find { it.id == boxId } ?: return@update state
 
-            val config = box.config as? InputConfig ?: return@update state
-            val updatedBox = box.copy(config = config.copy(value = value))
+            val config = box.config
+            val updatedBox = when (config) {
+                is InputConfig -> box.copy(config = config.copy(value = value))
+                is TextConfig -> box.copy(config = config.copy(value = value))
+                else -> box
+            }
             val updatedBoxes = tab.boxes.map { if (it.id == boxId) updatedBox else it }
             val updatedTab = tab.copy(boxes = updatedBoxes)
 
-            // Trigger onTextChange event
-            val processedBoxes = eventEngine.handleEvent(updatedBox, EventType.ON_TEXT_CHANGE, updatedTab)
+            // Trigger onTextChange event for input boxes
+            val processedBoxes = if (config is InputConfig) {
+                eventEngine.handleEvent(updatedBox, EventType.ON_TEXT_CHANGE, updatedTab)
+            } else {
+                updatedBoxes
+            }
             val finalTab = updatedTab.copy(boxes = processedBoxes)
 
             state.copy(

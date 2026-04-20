@@ -3,6 +3,7 @@ package com.dashboard.builder.ui.components.boxes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -10,6 +11,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,7 +29,9 @@ import com.dashboard.builder.data.model.*
 fun BoxContent(
     box: Box,
     isSelected: Boolean,
-    isMoveMode: Boolean = false
+    isMoveMode: Boolean = false,
+    onInputChange: (String) -> Unit = {},
+    onCheckboxToggle: (Int) -> Unit = {}
 ) {
     val backgroundColor = try {
         Color(android.graphics.Color.parseColor(box.style.backgroundColor))
@@ -43,17 +50,17 @@ fun BoxContent(
             .padding(4.dp)
     ) {
         when (box.type) {
-            BoxType.INPUT -> InputBoxContent(box, isSelected, isMoveMode)
-            BoxType.TEXT -> TextBoxContent(box, isSelected)
+            BoxType.INPUT -> InputBoxContent(box, isSelected, isMoveMode, onInputChange)
+            BoxType.TEXT -> TextBoxContent(box, isSelected, isMoveMode, onInputChange)
             BoxType.BUTTON -> ButtonBoxContent(box, isMoveMode)
-            BoxType.CHECKBOX_LIST -> CheckboxListContent(box, isSelected, isMoveMode)
+            BoxType.CHECKBOX_LIST -> CheckboxListContent(box, isSelected, isMoveMode, onCheckboxToggle)
             BoxType.COUNTER -> CounterContent(box, isSelected, isMoveMode)
         }
     }
 }
 
 @Composable
-private fun InputBoxContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = false) {
+private fun InputBoxContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = false, onInputChange: (String) -> Unit = {}) {
     val config = box.config as? InputConfig ?: return
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -67,7 +74,7 @@ private fun InputBoxContent(box: Box, isSelected: Boolean, isMoveMode: Boolean =
         }
         BasicTextField(
             value = config.value,
-            onValueChange = { /* Handled by ViewModel */ },
+            onValueChange = onInputChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -91,8 +98,9 @@ private fun InputBoxContent(box: Box, isSelected: Boolean, isMoveMode: Boolean =
 }
 
 @Composable
-private fun TextBoxContent(box: Box, isSelected: Boolean) {
+private fun TextBoxContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = false, onInputChange: (String) -> Unit = {}) {
     val config = box.config as? TextConfig ?: return
+    var isEditing by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Only show label when selected
@@ -103,11 +111,38 @@ private fun TextBoxContent(box: Box, isSelected: Boolean) {
                 modifier = Modifier.padding(bottom = 2.dp)
             )
         }
-        Text(
-            text = config.value,
-            fontSize = 12.sp,
-            modifier = Modifier.weight(1f)
-        )
+        
+        if (isSelected && !isMoveMode) {
+            // Editable mode - show text field when selected (and not in move mode)
+            BasicTextField(
+                value = config.value,
+                onValueChange = onInputChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                textStyle = TextStyle(fontSize = 12.sp),
+                cursorBrush = SolidColor(Color.Black),
+                decorationBox = { innerTextField ->
+                    Box {
+                        if (config.value.isEmpty()) {
+                            Text(
+                                text = "Tap to edit...",
+                                color = Color.Gray,
+                                fontSize = 12.sp
+                            )
+                        }
+                        innerTextField()
+                    }
+                }
+            )
+        } else {
+            // View mode - just display text
+            Text(
+                text = config.value,
+                fontSize = 12.sp,
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
 
@@ -132,7 +167,7 @@ private fun ButtonBoxContent(box: Box, isMoveMode: Boolean = false) {
 }
 
 @Composable
-private fun CheckboxListContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = false) {
+private fun CheckboxListContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = false, onCheckboxToggle: (Int) -> Unit = {}) {
     val config = box.config as? CheckboxListConfig ?: return
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -156,14 +191,16 @@ private fun CheckboxListContent(box: Box, isSelected: Boolean, isMoveMode: Boole
                     .weight(1f)
                     .fillMaxWidth()
             ) {
-                config.items.take(5).forEach { item ->
+                config.items.forEachIndexed { index, item ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(vertical = 1.dp)
+                        modifier = Modifier
+                            .padding(vertical = 1.dp)
+                            .clickable(enabled = !isMoveMode) { onCheckboxToggle(index) }
                     ) {
                         Checkbox(
                             checked = item.checked,
-                            onCheckedChange = { /* Handled by ViewModel */ },
+                            onCheckedChange = { onCheckboxToggle(index) },
                             enabled = !isMoveMode, // Disable in move mode
                             modifier = Modifier.size(16.dp)
                         )

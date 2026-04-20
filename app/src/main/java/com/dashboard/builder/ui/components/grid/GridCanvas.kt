@@ -31,6 +31,8 @@ fun GridCanvas(
     onBoxDoubleSelected: (String) -> Unit,
     onBoxMoved: (String, Int, Int) -> Unit,
     onBoxResized: (String, Int, Int) -> Unit,
+    onInputChange: (String, String) -> Unit = { _, _ -> },
+    onCheckboxToggle: (String, Int) -> Unit = { _, _ -> },
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -108,7 +110,9 @@ fun GridCanvas(
                         val newW = box.size.w + (dwPx / cellSizePx).toInt()
                         val newH = box.size.h + (dhPx / cellSizePx).toInt()
                         onBoxResized(box.id, newW, newH)
-                    }
+                    },
+                    onInputChange = { onInputChange(box.id, it) },
+                    onCheckboxToggle = { onCheckboxToggle(box.id, it) }
                 )
             }
 
@@ -120,7 +124,9 @@ fun GridCanvas(
                     isSelected = box.id == selectedBoxId,
                     isMoveMode = isMoveMode,
                     onSelected = { onBoxSelected(box.id) },
-                    onDoubleSelected = { onBoxDoubleSelected(box.id) }
+                    onDoubleSelected = { onBoxDoubleSelected(box.id) },
+                    onInputChange = { onInputChange(box.id, it) },
+                    onCheckboxToggle = { onCheckboxToggle(box.id, it) }
                 )
             }
         }
@@ -137,7 +143,9 @@ private fun DraggableBoxItem(
     onSelected: () -> Unit,
     onDoubleSelected: () -> Unit,
     onMoved: (Float, Float) -> Unit,
-    onResized: (Float, Float) -> Unit
+    onResized: (Float, Float) -> Unit,
+    onInputChange: (String) -> Unit = {},
+    onCheckboxToggle: (Int) -> Unit = {}
 ) {
     // Use rememberUpdatedState to avoid stale closures
     val cellSizePxState by rememberUpdatedState(cellSizePx)
@@ -252,7 +260,13 @@ private fun DraggableBoxItem(
                 } else Modifier
             )
     ) {
-        BoxContent(box = box, isSelected = isSelected, isMoveMode = isMoveMode)
+        BoxContent(
+            box = box,
+            isSelected = isSelected,
+            isMoveMode = isMoveMode,
+            onInputChange = onInputChange,
+            onCheckboxToggle = onCheckboxToggle
+        )
     }
 }
 
@@ -263,7 +277,9 @@ private fun BoxItem(
     isSelected: Boolean,
     isMoveMode: Boolean = false,
     onSelected: () -> Unit,
-    onDoubleSelected: () -> Unit
+    onDoubleSelected: () -> Unit,
+    onInputChange: (String) -> Unit = {},
+    onCheckboxToggle: (Int) -> Unit = {}
 ) {
     var lastTapTime by remember { mutableLongStateOf(0L) }
     val onSelectedState by rememberUpdatedState(onSelected)
@@ -293,6 +309,12 @@ private fun BoxItem(
                 )
             }
     ) {
-        BoxContent(box = box, isSelected = isSelected, isMoveMode = isMoveMode)
+        BoxContent(
+            box = box,
+            isSelected = isSelected,
+            isMoveMode = isMoveMode,
+            onInputChange = onInputChange,
+            onCheckboxToggle = onCheckboxToggle
+        )
     }
 }

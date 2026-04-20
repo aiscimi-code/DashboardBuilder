@@ -343,15 +343,152 @@ data class AppState(
                 )
             )
             
+            // Tab C - Meals for the week
+            val tabC = Tab(
+                id = "C",
+                name = "Meals",
+                backgroundColor = "#FFF8E1",
+                boxes = listOf(
+                    // Header - Weekly Menu
+                    Box(
+                        id = "c_header",
+                        type = BoxType.TEXT,
+                        label = "",
+                        position = Position(0, 0),
+                        size = Size(10, 1),
+                        config = TextConfig(value = "🍽️ Weekly Meal Plan"),
+                        style = Style(backgroundColor = "#FF8F00")
+                    ),
+                    
+                    // Day - Monday
+                    Box(
+                        id = "c_mon",
+                        type = BoxType.CHECKBOX_LIST,
+                        label = "Monday",
+                        position = Position(0, 1),
+                        size = Size(5, 3),
+                        config = CheckboxListConfig(
+                            items = listOf(
+                                CheckboxItem(text = "Breakfast: Oatmeal & Berries", checked = true),
+                                CheckboxItem(text = "Lunch: Chicken Salad", checked = false),
+                                CheckboxItem(text = "Dinner: Salmon & Veggies", checked = false)
+                            )
+                        ),
+                        style = Style(backgroundColor = "#FFFFFF")
+                    ),
+                    
+                    // Day - Tuesday
+                    Box(
+                        id = "c_tue",
+                        type = BoxType.CHECKBOX_LIST,
+                        label = "Tuesday",
+                        position = Position(5, 1),
+                        size = Size(5, 3),
+                        config = CheckboxListConfig(
+                            items = listOf(
+                                CheckboxItem(text = "Breakfast: Greek Yogurt", checked = false),
+                                CheckboxItem(text = "Lunch: Quinoa Bowl", checked = false),
+                                CheckboxItem(text = "Dinner: Pasta Primavera", checked = false)
+                            )
+                        ),
+                        style = Style(backgroundColor = "#FFFFFF")
+                    ),
+                    
+                    // Day - Wednesday
+                    Box(
+                        id = "c_wed",
+                        type = BoxType.CHECKBOX_LIST,
+                        label = "Wednesday",
+                        position = Position(0, 4),
+                        size = Size(5, 3),
+                        config = CheckboxListConfig(
+                            items = listOf(
+                                CheckboxItem(text = "Breakfast: Eggs & Toast", checked = false),
+                                CheckboxItem(text = "Lunch: Turkey Wrap", checked = false),
+                                CheckboxItem(text = "Dinner: Stir Fry Tofu", checked = false)
+                            )
+                        ),
+                        style = Style(backgroundColor = "#FFFFFF")
+                    ),
+                    
+                    // Day - Thursday
+                    Box(
+                        id = "c_thu",
+                        type = BoxType.CHECKBOX_LIST,
+                        label = "Thursday",
+                        position = Position(5, 4),
+                        size = Size(5, 3),
+                        config = CheckboxListConfig(
+                            items = listOf(
+                                CheckboxItem(text = "Breakfast: Smoothie Bowl", checked = false),
+                                CheckboxItem(text = "Lunch: Lentil Soup", checked = false),
+                                CheckboxItem(text = "Dinner: Grilled Fish Tacos", checked = false)
+                            )
+                        ),
+                        style = Style(backgroundColor = "#FFFFFF")
+                    ),
+                    
+                    // Day - Friday
+                    Box(
+                        id = "c_fri",
+                        type = BoxType.CHECKBOX_LIST,
+                        label = "Friday",
+                        position = Position(0, 7),
+                        size = Size(5, 3),
+                        config = CheckboxListConfig(
+                            items = listOf(
+                                CheckboxItem(text = "Breakfast: Avocado Toast", checked = false),
+                                CheckboxItem(text = "Lunch: Caesar Salad", checked = false),
+                                CheckboxItem(text = "Dinner: Pizza Night!", checked = false)
+                            )
+                        ),
+                        style = Style(backgroundColor = "#FFFFFF")
+                    ),
+                    
+                    // Weekend Header
+                    Box(
+                        id = "c_weekend",
+                        type = BoxType.TEXT,
+                        label = "",
+                        position = Position(5, 7),
+                        size = Size(5, 1),
+                        config = TextConfig(value = "🎉 Weekend"),
+                        style = Style(backgroundColor = "#FF8F00")
+                    ),
+                    
+                    // Shopping List Summary
+                    Box(
+                        id = "c_shopping",
+                        type = BoxType.TEXT,
+                        label = "Shopping List",
+                        position = Position(0, 10),
+                        size = Size(7, 2),
+                        config = TextConfig(value = "🥗 Need: Chicken, Salmon, Eggs, Quinoa, Avocado, Berries, Greek Yogurt, Tofu"),
+                        style = Style(backgroundColor = "#E8F5E9")
+                    ),
+                    
+                    // Quick Add Button
+                    Box(
+                        id = "c_add",
+                        type = BoxType.BUTTON,
+                        label = "",
+                        position = Position(7, 10),
+                        size = Size(3, 2),
+                        config = ButtonConfig(text = "+ Add Meal"),
+                        style = Style(backgroundColor = "#4CAF50")
+                    )
+                )
+            )
+            
             // Other tabs are empty
-            val otherTabs = ('C'..'J').map { char ->
+            val otherTabs = ('D'..'J').map { char ->
                 Tab(
                     id = char.toString(),
                     name = "Tab $char"
                 )
             }
             
-            return listOf(tabA, tabB) + otherTabs
+            return listOf(tabA, tabB, tabC) + otherTabs
         }
     }
 }

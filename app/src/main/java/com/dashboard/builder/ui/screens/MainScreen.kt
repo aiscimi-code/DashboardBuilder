@@ -141,6 +141,12 @@ fun MainScreen(viewModel: MainViewModel) {
                     onBoxResized = { boxId, w, h ->
                         viewModel.resizeBox(boxId, w, h)
                     },
+                    onInputChange = { boxId, value ->
+                        viewModel.updateInputValue(boxId, value)
+                    },
+                    onCheckboxToggle = { boxId, index ->
+                        viewModel.toggleCheckbox(boxId, index)
+                    },
                     modifier = Modifier.fillMaxSize()
                 )
             }
