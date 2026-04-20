@@ -112,8 +112,11 @@ class MainViewModel : ViewModel() {
 
             if (box.locked) return@update state
 
-            val clampedW = newW.coerceIn(1, GridEngine.COLUMNS)
-            val clampedH = newH.coerceIn(1, GridEngine.ROWS)
+            // Clamp width to not exceed grid (max 10) and remaining space
+            val maxWidth = (GridEngine.COLUMNS - box.position.x).coerceAtMost(GridEngine.COLUMNS)
+            val maxHeight = (GridEngine.ROWS - box.position.y).coerceAtMost(GridEngine.ROWS)
+            val clampedW = newW.coerceIn(1, maxWidth)
+            val clampedH = newH.coerceIn(1, maxHeight)
 
             val resizedBox = box.copy(size = Size(clampedW, clampedH))
 

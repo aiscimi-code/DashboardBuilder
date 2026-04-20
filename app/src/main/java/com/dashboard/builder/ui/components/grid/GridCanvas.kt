@@ -3,6 +3,7 @@ package com.dashboard.builder.ui.components.grid
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -29,6 +29,7 @@ fun GridCanvas(
     availableWidth: Dp = 0.dp,
     isMoveMode: Boolean = false,
     onBoxSelected: (String?) -> Unit,
+    onBoxDoubleSelected: (String) -> Unit,
     onBoxMoved: (String, Int, Int) -> Unit,
     onBoxResized: (String, Int, Int) -> Unit,
     modifier: Modifier = Modifier
@@ -98,6 +99,7 @@ fun GridCanvas(
                     isSelected = box.id == selectedBoxId,
                     isMoveMode = isMoveMode,
                     onSelected = { onBoxSelected(box.id) },
+                    onDoubleSelected = { onBoxDoubleSelected(box.id) },
                     onMoved = { dx, dy ->
                         val newX = box.position.x + (dx / cellSizePx).toInt()
                         val newY = box.position.y + (dy / cellSizePx).toInt()
@@ -117,7 +119,8 @@ fun GridCanvas(
                     box = box,
                     cellSize = cellSize,
                     isSelected = box.id == selectedBoxId,
-                    onSelected = { onBoxSelected(box.id) }
+                    onSelected = { onBoxSelected(box.id) },
+                    onDoubleSelected = { onBoxDoubleSelected(box.id) }
                 )
             }
         }
@@ -132,6 +135,7 @@ private fun DraggableBoxItem(
     isSelected: Boolean,
     isMoveMode: Boolean = false,
     onSelected: () -> Unit,
+    onDoubleSelected: () -> Unit,
     onMoved: (Float, Float) -> Unit,
     onResized: (Float, Float) -> Unit
 ) {
@@ -139,6 +143,9 @@ private fun DraggableBoxItem(
     var isResizing by remember { mutableStateOf(false) }
     var totalDragX by remember { mutableFloatStateOf(0f) }
     var totalDragY by remember { mutableFloatStateOf(0f) }
+    
+    // Track last tap time for double-tap detection
+    var lastTapTime by remember { mutableLongStateOf(0L) }
 
     Box(
         modifier = Modifier
@@ -150,6 +157,21 @@ private fun DraggableBoxItem(
                 width = cellSize * box.size.w,
                 height = cellSize * box.size.h
             )
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        val currentTime = System.currentTimeMillis()
+                        if (currentTime - lastTapTime < 300) {
+                            // Double tap
+                            onDoubleSelected()
+                        } else {
+                            // Single tap
+                            onSelected()
+                        }
+                        lastTapTime = currentTime
+                    }
+                )
+            }
             .then(
                 // In move mode, allow dragging even locked boxes. Otherwise only unlocked.
                 if (!box.locked || isMoveMode) {
@@ -197,16 +219,6 @@ private fun DraggableBoxItem(
                     }
                 } else Modifier
             )
-            .pointerInput(Unit) {
-                awaitPointerEventScope {
-                    while (true) {
-                        val event = awaitPointerEvent()
-                        if (event.changes.any { it.pressed }) {
-                            onSelected()
-                        }
-                    }
-                }
-            }
     ) {
         BoxContent(box = box, isSelected = isSelected)
     }
@@ -217,8 +229,11 @@ private fun BoxItem(
     box: Box,
     cellSize: Dp,
     isSelected: Boolean,
-    onSelected: () -> Unit
+    onSelected: () -> Unit,
+    onDoubleSelected: () -> Unit
 ) {
+    var lastTapTime by remember { mutableLongStateOf(0L) }
+    
     Box(
         modifier = Modifier
             .offset(
@@ -230,14 +245,17 @@ private fun BoxItem(
                 height = cellSize * box.size.h
             )
             .pointerInput(Unit) {
-                awaitPointerEventScope {
-                    while (true) {
-                        val event = awaitPointerEvent()
-                        if (event.changes.any { it.pressed }) {
+                detectTapGestures(
+                    onTap = {
+                        val currentTime = System.currentTimeMillis()
+                        if (currentTime - lastTapTime < 300) {
+                            onDoubleSelected()
+                        } else {
                             onSelected()
                         }
+                        lastTapTime = currentTime
                     }
-                }
+                )
             }
     ) {
         BoxContent(box = box, isSelected = isSelected)

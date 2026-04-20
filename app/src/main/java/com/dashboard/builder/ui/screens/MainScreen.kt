@@ -2,15 +2,24 @@ package com.dashboard.builder.ui.screens
 
 import android.view.ViewTreeObserver
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dashboard.builder.ui.components.BottomMenu
 import com.dashboard.builder.ui.components.TabBar
@@ -19,6 +28,7 @@ import com.dashboard.builder.ui.dialogs.AddBoxSheet
 import com.dashboard.builder.ui.dialogs.EditBoxSheet
 import com.dashboard.builder.viewmodel.EditMode
 import com.dashboard.builder.viewmodel.MainViewModel
+import com.dashboard.builder.data.model.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +41,8 @@ fun MainScreen(viewModel: MainViewModel) {
 
     var showAddSheet by remember { mutableStateOf(false) }
     var showEditSheet by remember { mutableStateOf(false) }
-
+    var showFullScreenEditor by remember { mutableStateOf(false) }
+    
     // Track keyboard visibility
     val view = LocalView.current
     var isKeyboardVisible by remember { mutableStateOf(false) }
@@ -68,7 +79,12 @@ fun MainScreen(viewModel: MainViewModel) {
                         onAddClick = { showAddSheet = true },
                         onEditClick = {
                             if (uiState.selectedBoxId != null) {
-                                showEditSheet = true
+                                // If it's a text box, open full screen editor
+                                if (selectedBox?.type == BoxType.TEXT) {
+                                    showFullScreenEditor = true
+                                } else {
+                                    showEditSheet = true
+                                }
                             }
                         },
                         onMoveClick = {
@@ -115,6 +131,15 @@ fun MainScreen(viewModel: MainViewModel) {
                         onBoxSelected = { boxId ->
                             viewModel.selectBox(boxId)
                         },
+                        onBoxDoubleSelected = { boxId ->
+                            viewModel.selectBox(boxId)
+                            val box = currentTab.boxes.find { it.id == boxId }
+                            if (box?.type == BoxType.TEXT) {
+                                showFullScreenEditor = true
+                            } else {
+                                showEditSheet = true
+                            }
+                        },
                         onBoxMoved = { boxId, x, y ->
                             viewModel.moveBox(boxId, x, y)
                         },
@@ -140,8 +165,8 @@ fun MainScreen(viewModel: MainViewModel) {
         )
     }
 
-    // Edit box sheet (show when keyboard is visible or when manually opened)
-    if (showEditSheet && selectedBox != null && currentTab != null) {
+    // Edit box sheet (show for non-text boxes or when manually opened)
+    if (showEditSheet && selectedBox != null && currentTab != null && selectedBox.type != BoxType.TEXT) {
         EditBoxSheet(
             box = selectedBox,
             allBoxes = currentTab.boxes,
@@ -154,5 +179,116 @@ fun MainScreen(viewModel: MainViewModel) {
             onAddAction = { viewModel.addAction(selectedBox.id, it) },
             onRemoveAction = { viewModel.removeAction(selectedBox.id, it) }
         )
+    }
+    
+    // Full screen text editor
+    if (showFullScreenEditor && selectedBox != null) {
+        FullScreenTextEditor(
+            box = selectedBox,
+            onDismiss = { showFullScreenEditor = false },
+            onSave = { newValue ->
+                val newConfig = selectedBox.config.let {
+                    when (it) {
+                        is TextConfig -> it.copy(value = newValue)
+                        is InputConfig -> it.copy(value = newValue)
+                        else -> it
+                    }
+                }
+                viewModel.updateBoxConfig(selectedBox.id, newConfig)
+                showFullScreenEditor = false
+            }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FullScreenTextEditor(
+    box: Box,
+    onDismiss: () -> Unit,
+    onSave: (String) -> Unit
+) {
+    var textValue by remember {
+        mutableStateOf(
+            when (val config = box.config) {
+                is TextConfig -> config.value
+                is InputConfig -> config.value
+                else -> ""
+            }
+        )
+    }
+    var showTextField by remember { mutableStateOf(true) }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Edit ${box.type.name}") },
+                navigationIcon = {
+                    IconButton(onClick = onDismiss) {
+                        Icon(Icons.Default.Close, contentDescription = "Cancel")
+                    }
+                },
+                actions = {
+                    TextButton(onClick = { onSave(textValue) }) {
+                        Text("Save", color = MaterialTheme.colorScheme.primary)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            // Label field (if has label)
+            if (box.label.isNotEmpty()) {
+                OutlinedTextField(
+                    value = box.label,
+                    onValueChange = { },
+                    label = { Text("Label") },
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            
+            // Text editing toolbar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                IconButton(onClick = { /* Cut - handled by text field */ }) {
+                    Icon(Icons.Default.ContentCut, "Cut")
+                }
+                IconButton(onClick = { /* Paste - handled by text field */ }) {
+                    Icon(Icons.Default.ContentPaste, "Paste")
+                }
+                IconButton(onClick = { /* Select All - handled by text field */ }) {
+                    Icon(Icons.Default.SelectAll, "Select All")
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            // Full width text input
+            OutlinedTextField(
+                value = textValue,
+                onValueChange = { textValue = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState()),
+                textStyle = TextStyle(fontSize = 16.sp),
+                placeholder = { Text("Enter text...") }
+            )
+        }
     }
 }
