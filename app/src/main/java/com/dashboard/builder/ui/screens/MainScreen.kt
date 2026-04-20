@@ -104,15 +104,13 @@ fun MainScreen(viewModel: MainViewModel) {
             }
         }
     ) { paddingValues ->
-        var gridAvailableWidth by remember { mutableStateOf(0.dp) }
-        
-        // Measure available width using BoxWithConstraints
+        // Use BoxWithConstraints to get actual available width
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            gridAvailableWidth = maxWidth
+            val availableWidth = maxWidth
             
             Column(modifier = Modifier.fillMaxSize()) {
                 // Tab bar
@@ -121,12 +119,12 @@ fun MainScreen(viewModel: MainViewModel) {
                     onTabSelected = { viewModel.selectTab(it) }
                 )
                 
-                // Grid - use available width
+                // Grid - use available width to fit 10 columns
                 if (currentTab != null) {
                     GridCanvas(
                         tab = currentTab,
                         selectedBoxId = uiState.selectedBoxId,
-                        availableWidth = gridAvailableWidth,
+                        availableWidth = availableWidth,
                         isMoveMode = uiState.mode == EditMode.MOVE,
                         onBoxSelected = { boxId ->
                             viewModel.selectBox(boxId)

@@ -25,7 +25,7 @@ import com.dashboard.builder.ui.components.boxes.BoxContent
 fun GridCanvas(
     tab: Tab,
     selectedBoxId: String?,
-    cellSize: Dp = 80.dp,
+    cellSize: Dp = 40.dp,
     availableWidth: Dp = 0.dp,
     isMoveMode: Boolean = false,
     onBoxSelected: (String?) -> Unit,
@@ -38,13 +38,13 @@ fun GridCanvas(
     val horizontalScrollState = rememberScrollState()
     val density = LocalDensity.current
     
-    // Calculate cell size based on available width - fit 10 columns to screen
-    val calculatedCellSize = if (availableWidth.value > 0) {
-        (availableWidth / GridEngine.COLUMNS).coerceAtMost(cellSize)
+    // Calculate cell size based on available width - fit 10 columns to screen exactly
+    // Use minimum of availableWidth/10 or default cellSize, but prefer smaller to fit screen
+    val actualCellSize = if (availableWidth.value > 0) {
+        availableWidth / GridEngine.COLUMNS
     } else {
         cellSize
     }
-    val actualCellSize = calculatedCellSize
     val cellSizePx = with(density) { actualCellSize.toPx() }
 
     // Calculate grid dimensions
