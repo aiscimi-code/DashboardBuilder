@@ -31,7 +31,10 @@ fun BoxContent(
     isSelected: Boolean,
     isMoveMode: Boolean = false,
     onInputChange: (String) -> Unit = {},
-    onCheckboxToggle: (Int) -> Unit = {}
+    onCheckboxToggle: (Int) -> Unit = {},
+    onButtonClick: () -> Unit = {},
+    onIncrement: () -> Unit = {},
+    onDecrement: () -> Unit = {}
 ) {
     val backgroundColor = try {
         Color(android.graphics.Color.parseColor(box.style.backgroundColor))
@@ -52,9 +55,9 @@ fun BoxContent(
         when (box.type) {
             BoxType.INPUT -> InputBoxContent(box, isSelected, isMoveMode, onInputChange)
             BoxType.TEXT -> TextBoxContent(box, isSelected, isMoveMode, onInputChange)
-            BoxType.BUTTON -> ButtonBoxContent(box, isMoveMode)
+            BoxType.BUTTON -> ButtonBoxContent(box, isMoveMode, onButtonClick)
             BoxType.CHECKBOX_LIST -> CheckboxListContent(box, isSelected, isMoveMode, onCheckboxToggle)
-            BoxType.COUNTER -> CounterContent(box, isSelected, isMoveMode)
+            BoxType.COUNTER -> CounterContent(box, isSelected, isMoveMode, onIncrement, onDecrement)
         }
     }
 }
@@ -147,7 +150,7 @@ private fun TextBoxContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = 
 }
 
 @Composable
-private fun ButtonBoxContent(box: Box, isMoveMode: Boolean = false) {
+private fun ButtonBoxContent(box: Box, isMoveMode: Boolean = false, onButtonClick: () -> Unit = {}) {
     val config = box.config as? ButtonConfig ?: return
 
     // Buttons don't show labels - only the button text
@@ -157,7 +160,7 @@ private fun ButtonBoxContent(box: Box, isMoveMode: Boolean = false) {
         verticalArrangement = Arrangement.Center
     ) {
         Button(
-            onClick = { /* Handled by ViewModel */ },
+            onClick = onButtonClick,
             enabled = !isMoveMode, // Disable button in move mode
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -217,7 +220,7 @@ private fun CheckboxListContent(box: Box, isSelected: Boolean, isMoveMode: Boole
 }
 
 @Composable
-private fun CounterContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = false) {
+private fun CounterContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = false, onIncrement: () -> Unit = {}, onDecrement: () -> Unit = {}) {
     val config = box.config as? CounterConfig ?: return
 
     Column(
@@ -238,7 +241,7 @@ private fun CounterContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = 
             horizontalArrangement = Arrangement.Center
         ) {
             IconButton(
-                onClick = { /* Handled by ViewModel */ },
+                onClick = onDecrement,
                 enabled = !isMoveMode, // Disable in move mode
                 modifier = Modifier.size(24.dp)
             ) {
@@ -254,7 +257,7 @@ private fun CounterContent(box: Box, isSelected: Boolean, isMoveMode: Boolean = 
                 textAlign = TextAlign.Center
             )
             IconButton(
-                onClick = { /* Handled by ViewModel */ },
+                onClick = onIncrement,
                 enabled = !isMoveMode, // Disable in move mode
                 modifier = Modifier.size(24.dp)
             ) {

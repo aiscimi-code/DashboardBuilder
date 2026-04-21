@@ -162,6 +162,15 @@ fun MainScreen(viewModel: MainViewModel) {
                     onCheckboxToggle = { boxId, index ->
                         viewModel.toggleCheckbox(boxId, index)
                     },
+                    onBoxButtonClick = { boxId ->
+                        viewModel.onButtonClick(boxId)
+                    },
+                    onBoxIncrement = { boxId ->
+                        viewModel.incrementCounter(boxId)
+                    },
+                    onBoxDecrement = { boxId ->
+                        viewModel.decrementCounter(boxId)
+                    },
                     modifier = Modifier.fillMaxSize()
                 )
             }

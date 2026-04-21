@@ -188,7 +188,7 @@ fun EditBoxSheet(
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                                 Text(
-                                    "Target: ${action.targetBoxId}",
+                                    "Target: ${allBoxes.find { it.id == action.targetBoxId }?.label ?: action.targetBoxId}",
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
