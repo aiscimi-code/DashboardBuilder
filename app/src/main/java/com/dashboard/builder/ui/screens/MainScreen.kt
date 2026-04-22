@@ -2,6 +2,8 @@ package com.dashboard.builder.ui.screens
 
 import android.view.ViewTreeObserver
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -45,11 +47,70 @@ fun MainScreen(viewModel: MainViewModel) {
     var showEditSheet by remember { mutableStateOf(false) }
     var showFullScreenEditor by remember { mutableStateOf(false) }
     var showExportImportDialog by remember { mutableStateOf(false) }
-    
+
+    // ── SAF file launchers ───────────────────────────────────────────────────
+    // We need to know *which* export to perform when the picker returns a URI,
+    // so we track the pending mode in a remembered ref.
+    var pendingExportAll by remember { mutableStateOf(true) }
+
+    /** Export launcher — opens the system "Save As" picker. */
+    val exportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        try {
+            val json = if (pendingExportAll) viewModel.exportToJson()
+                       else viewModel.exportCurrentTabToJson()
+            context.contentResolver.openOutputStream(uri)?.use { it.write(json.toByteArray()) }
+            Toast.makeText(context, "Exported successfully", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(context, "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    /** Import-all launcher — opens the system file picker, replaces all tabs. */
+    val importAllLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        try {
+            val json = context.contentResolver.openInputStream(uri)
+                ?.bufferedReader()?.readText() ?: return@rememberLauncherForActivityResult
+            val error = viewModel.importFromJson(json)
+            if (error == null) {
+                Toast.makeText(context, "Import successful", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Import failed: $error", Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Import failed: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    /** Import-tab launcher — opens the system file picker, merges a single tab. */
+    val importTabLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        try {
+            val json = context.contentResolver.openInputStream(uri)
+                ?.bufferedReader()?.readText() ?: return@rememberLauncherForActivityResult
+            val error = viewModel.importTabFromJson(json)
+            if (error == null) {
+                Toast.makeText(context, "Tab imported successfully", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Import failed: $error", Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Import failed: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+    // ── end SAF launchers ────────────────────────────────────────────────────
+
     // Track keyboard visibility
     val view = LocalView.current
     var isKeyboardVisible by remember { mutableStateOf(false) }
-    
+
     DisposableEffect(view) {
         val listener = ViewTreeObserver.OnGlobalLayoutListener {
             val rect = android.graphics.Rect()
@@ -82,7 +143,6 @@ fun MainScreen(viewModel: MainViewModel) {
                         onAddClick = { showAddSheet = true },
                         onEditClick = {
                             if (uiState.selectedBoxId != null) {
-                                // If it's a text box, open full screen editor
                                 if (selectedBox?.type == BoxType.TEXT) {
                                     showFullScreenEditor = true
                                 } else {
@@ -99,18 +159,12 @@ fun MainScreen(viewModel: MainViewModel) {
                             uiState.selectedBoxId?.let { viewModel.deleteBox(it) }
                         },
                         onExportClick = {
-                            // Show export/import dialog
                             showExportImportDialog = true
                         },
                         onSaveClick = {
-                            val json = viewModel.exportToJson()
-                            try {
-                                val file = java.io.File(context.filesDir, "dashboard_layout.json")
-                                file.writeText(json)
-                                Toast.makeText(context, "Layout saved to ${file.absolutePath}", Toast.LENGTH_SHORT).show()
-                            } catch (e: Exception) {
-                                Toast.makeText(context, "Save failed: ${e.message}", Toast.LENGTH_LONG).show()
-                            }
+                            // Quick-save all tabs using SAF so user can choose location
+                            pendingExportAll = true
+                            exportLauncher.launch("dashboard_layout.json")
                         },
                         onUndoClick = {
                             viewModel.undo()
@@ -130,7 +184,7 @@ fun MainScreen(viewModel: MainViewModel) {
                 state = uiState,
                 onTabSelected = { viewModel.selectTab(it) }
             )
-            
+
             // Grid - use actual screen width to fit 10 columns
             if (currentTab != null) {
                 GridCanvas(
@@ -203,32 +257,24 @@ fun MainScreen(viewModel: MainViewModel) {
             onRemoveAction = { viewModel.removeAction(selectedBox.id, it) }
         )
     }
-    
-    // Full screen text editor
 
     if (showExportImportDialog) {
         ExportImportDialog(
-            context = context,
             onDismiss = { showExportImportDialog = false },
-            onExport = { targetAll ->
-                val json = if (targetAll) viewModel.exportToJson() else viewModel.exportCurrentTabToJson()
-                try {
-                    val file = java.io.File(context.filesDir, if (targetAll) "dashboard_all.json" else "dashboard_current.json")
-                    file.writeText(json)
-                    Toast.makeText(context, "Exported to ${file.absolutePath}", Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    Toast.makeText(context, "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
-                }
-                showExportImportDialog = false
+            onExportAll = {
+                pendingExportAll = true
+                exportLauncher.launch("dashboard_all.json")
             },
-            onImport = { targetAll, jsonContent ->
-                try {
-                    viewModel.importFromJson(jsonContent)
-                    Toast.makeText(context, "Import successful", Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    Toast.makeText(context, "Import failed: ${e.message}", Toast.LENGTH_LONG).show()
-                }
-                showExportImportDialog = false
+            onExportCurrentTab = {
+                pendingExportAll = false
+                val tabName = currentTab?.name?.replace(Regex("[^A-Za-z0-9_-]"), "_") ?: "tab"
+                exportLauncher.launch("dashboard_$tabName.json")
+            },
+            onImportAll = {
+                importAllLauncher.launch(arrayOf("application/json", "text/plain"))
+            },
+            onImportCurrentTab = {
+                importTabLauncher.launch(arrayOf("application/json", "text/plain"))
             }
         )
     }
@@ -296,7 +342,6 @@ private fun FullScreenTextEditor(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // Label field (if has label)
             if (box.label.isNotEmpty()) {
                 OutlinedTextField(
                     value = box.label,
@@ -307,8 +352,7 @@ private fun FullScreenTextEditor(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
-            
-            // Text editing toolbar
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -316,20 +360,13 @@ private fun FullScreenTextEditor(
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                IconButton(onClick = { /* Cut - handled by text field */ }) {
-                    Icon(Icons.Default.ContentCut, "Cut")
-                }
-                IconButton(onClick = { /* Paste - handled by text field */ }) {
-                    Icon(Icons.Default.ContentPaste, "Paste")
-                }
-                IconButton(onClick = { /* Select All - handled by text field */ }) {
-                    Icon(Icons.Default.SelectAll, "Select All")
-                }
+                IconButton(onClick = { }) { Icon(Icons.Default.ContentCut, "Cut") }
+                IconButton(onClick = { }) { Icon(Icons.Default.ContentPaste, "Paste") }
+                IconButton(onClick = { }) { Icon(Icons.Default.SelectAll, "Select All") }
             }
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
-            // Full width text input
+
             OutlinedTextField(
                 value = textValue,
                 onValueChange = { textValue = it },

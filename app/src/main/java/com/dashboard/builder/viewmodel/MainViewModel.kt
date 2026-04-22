@@ -322,32 +322,63 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // Export JSON
-    fun exportToJson(): String {
-        return kotlinx.serialization.json.Json.encodeToString(
-            AppState.serializer(),
-            _uiState.value.appState
-        )
+    // ── Serialization helper ──────────────────────────────────────
+    // ignoreUnknownKeys lets older exports load cleanly on newer builds
+    private val json = kotlinx.serialization.json.Json {
+        ignoreUnknownKeys = true
+        prettyPrint = true
     }
 
-    // Export only the current tab
+    // ── Export ────────────────────────────────────────────────────
+
+    /** Serialise the full AppState (all tabs). */
+    fun exportToJson(): String =
+        json.encodeToString(AppState.serializer(), _uiState.value.appState)
+
+    /** Serialise only the currently-selected tab. */
     fun exportCurrentTabToJson(): String {
-        val currentTabId = _uiState.value.selectedTabId
-        val currentTab = _uiState.value.appState.tabs.find { it.id == currentTabId }
-        return if (currentTab != null) {
-            kotlinx.serialization.json.Json.encodeToString(com.dashboard.builder.data.model.Tab.serializer(), currentTab)
-        } else {
-            ""
+        val currentTab = _uiState.value.run {
+            appState.tabs.find { it.id == selectedTabId }
+        } ?: return ""
+        return json.encodeToString(Tab.serializer(), currentTab)
+    }
+
+    // ── Import ────────────────────────────────────────────────────
+
+    /**
+     * Import a full AppState JSON (all tabs).
+     * Returns null on success or an error message on failure.
+     */
+    fun importFromJson(jsonText: String): String? {
+        return try {
+            val appState = json.decodeFromString<AppState>(jsonText)
+            _uiState.update { it.copy(appState = appState) }
+            null
+        } catch (e: Exception) {
+            e.message ?: "Unknown parse error"
         }
     }
 
-    // Import JSON
-    fun importFromJson(json: String) {
-        try {
-            val appState = kotlinx.serialization.json.Json.decodeFromString<AppState>(json)
-            _uiState.update { it.copy(appState = appState) }
+    /**
+     * Import a single-Tab JSON, replacing the tab with the same id
+     * or appending it if no match exists.
+     * Returns null on success or an error message on failure.
+     */
+    fun importTabFromJson(jsonText: String): String? {
+        return try {
+            val incoming = json.decodeFromString<Tab>(jsonText)
+            _uiState.update { state ->
+                val tabs = state.appState.tabs
+                val updatedTabs = if (tabs.any { it.id == incoming.id }) {
+                    tabs.map { if (it.id == incoming.id) incoming else it }
+                } else {
+                    tabs + incoming
+                }
+                state.copy(appState = state.appState.copy(tabs = updatedTabs))
+            }
+            null
         } catch (e: Exception) {
-            // Handle error - in production, would expose error to UI
+            e.message ?: "Unknown parse error"
         }
     }
 }
