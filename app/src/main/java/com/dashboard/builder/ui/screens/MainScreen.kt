@@ -59,9 +59,22 @@ fun MainScreen(viewModel: MainViewModel) {
     ) { uri ->
         if (uri == null) return@rememberLauncherForActivityResult
         try {
-            val json = if (pendingExportAll) viewModel.exportToJson()
-                       else viewModel.exportCurrentTabToJson()
-            context.contentResolver.openOutputStream(uri)?.use { it.write(json.toByteArray()) }
+            val jsonText = if (pendingExportAll) viewModel.exportToJson()
+                           else viewModel.exportCurrentTabToJson()
+            if (jsonText.isEmpty()) {
+                Toast.makeText(context, "Nothing to export", Toast.LENGTH_SHORT).show()
+                return@rememberLauncherForActivityResult
+            }
+            // Use "rwt" (read-write-truncate) mode: more reliable than default "w"
+            // across different Android versions and storage providers (Downloads,
+            // Drive, USB). The bufferedWriter ensures the OS buffer is flushed
+            // before the file descriptor is released.
+            context.contentResolver.openOutputStream(uri, "rwt")
+                ?.bufferedWriter()
+                ?.use { writer ->
+                    writer.write(jsonText)
+                    writer.flush()
+                }
             Toast.makeText(context, "Exported successfully", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Toast.makeText(context, "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
@@ -106,11 +119,11 @@ fun MainScreen(viewModel: MainViewModel) {
         }
     }
     // ── end SAF launchers ────────────────────────────────────────────────────
-
+    
     // Track keyboard visibility
     val view = LocalView.current
     var isKeyboardVisible by remember { mutableStateOf(false) }
-
+    
     DisposableEffect(view) {
         val listener = ViewTreeObserver.OnGlobalLayoutListener {
             val rect = android.graphics.Rect()
@@ -143,6 +156,7 @@ fun MainScreen(viewModel: MainViewModel) {
                         onAddClick = { showAddSheet = true },
                         onEditClick = {
                             if (uiState.selectedBoxId != null) {
+                                // If it's a text box, open full screen editor
                                 if (selectedBox?.type == BoxType.TEXT) {
                                     showFullScreenEditor = true
                                 } else {
@@ -159,6 +173,7 @@ fun MainScreen(viewModel: MainViewModel) {
                             uiState.selectedBoxId?.let { viewModel.deleteBox(it) }
                         },
                         onExportClick = {
+                            // Show export/import dialog
                             showExportImportDialog = true
                         },
                         onSaveClick = {
@@ -184,7 +199,7 @@ fun MainScreen(viewModel: MainViewModel) {
                 state = uiState,
                 onTabSelected = { viewModel.selectTab(it) }
             )
-
+            
             // Grid - use actual screen width to fit 10 columns
             if (currentTab != null) {
                 GridCanvas(
@@ -257,6 +272,8 @@ fun MainScreen(viewModel: MainViewModel) {
             onRemoveAction = { viewModel.removeAction(selectedBox.id, it) }
         )
     }
+    
+    // Full screen text editor
 
     if (showExportImportDialog) {
         ExportImportDialog(
@@ -342,6 +359,7 @@ private fun FullScreenTextEditor(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
+            // Label field (if has label)
             if (box.label.isNotEmpty()) {
                 OutlinedTextField(
                     value = box.label,
@@ -352,7 +370,8 @@ private fun FullScreenTextEditor(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
-
+            
+            // Text editing toolbar
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -360,13 +379,20 @@ private fun FullScreenTextEditor(
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                IconButton(onClick = { }) { Icon(Icons.Default.ContentCut, "Cut") }
-                IconButton(onClick = { }) { Icon(Icons.Default.ContentPaste, "Paste") }
-                IconButton(onClick = { }) { Icon(Icons.Default.SelectAll, "Select All") }
+                IconButton(onClick = { /* Cut - handled by text field */ }) {
+                    Icon(Icons.Default.ContentCut, "Cut")
+                }
+                IconButton(onClick = { /* Paste - handled by text field */ }) {
+                    Icon(Icons.Default.ContentPaste, "Paste")
+                }
+                IconButton(onClick = { /* Select All - handled by text field */ }) {
+                    Icon(Icons.Default.SelectAll, "Select All")
+                }
             }
-
+            
             Spacer(modifier = Modifier.height(8.dp))
-
+            
+            // Full width text input
             OutlinedTextField(
                 value = textValue,
                 onValueChange = { textValue = it },

@@ -323,7 +323,6 @@ class MainViewModel : ViewModel() {
     }
 
     // ── Serialization helper ──────────────────────────────────────
-    // ignoreUnknownKeys lets older exports load cleanly on newer builds
     private val json = kotlinx.serialization.json.Json {
         ignoreUnknownKeys = true
         prettyPrint = true
@@ -346,39 +345,47 @@ class MainViewModel : ViewModel() {
     // ── Import ────────────────────────────────────────────────────
 
     /**
-     * Import a full AppState JSON (all tabs).
-     * Returns null on success or an error message on failure.
+     * Import JSON — accepts our own AppState/Tab exports *or* any arbitrary
+     * JSON file. Uses [JsonImportConverter] to detect the format and convert.
+     *
+     * For "Import All Tabs": replaces the whole AppState.
+     * Returns null on success, or an error message on failure.
      */
     fun importFromJson(jsonText: String): String? {
-        return try {
-            val appState = json.decodeFromString<AppState>(jsonText)
-            _uiState.update { it.copy(appState = appState) }
+        val result = com.dashboard.builder.data.JsonImportConverter.parse(jsonText)
+        return if (result.isSuccess) {
+            _uiState.update { it.copy(appState = result.getOrThrow()) }
             null
-        } catch (e: Exception) {
-            e.message ?: "Unknown parse error"
+        } else {
+            result.exceptionOrNull()?.message ?: "Unknown parse error"
         }
     }
 
     /**
-     * Import a single-Tab JSON, replacing the tab with the same id
-     * or appending it if no match exists.
-     * Returns null on success or an error message on failure.
+     * Import a single-Tab JSON (or the first tab of any imported JSON),
+     * replacing the matching tab or appending if no match.
+     * Returns null on success, or an error message on failure.
      */
     fun importTabFromJson(jsonText: String): String? {
-        return try {
-            val incoming = json.decodeFromString<Tab>(jsonText)
+        val result = com.dashboard.builder.data.JsonImportConverter.parse(jsonText)
+        return if (result.isSuccess) {
+            val importedTabs = result.getOrThrow().tabs
+            if (importedTabs.isEmpty()) return "No tabs found in imported file"
+            // Merge each imported tab into current state
             _uiState.update { state ->
-                val tabs = state.appState.tabs
-                val updatedTabs = if (tabs.any { it.id == incoming.id }) {
-                    tabs.map { if (it.id == incoming.id) incoming else it }
-                } else {
-                    tabs + incoming
+                var tabs = state.appState.tabs
+                importedTabs.forEach { incoming ->
+                    tabs = if (tabs.any { it.id == incoming.id }) {
+                        tabs.map { if (it.id == incoming.id) incoming else it }
+                    } else {
+                        tabs + incoming
+                    }
                 }
-                state.copy(appState = state.appState.copy(tabs = updatedTabs))
+                state.copy(appState = state.appState.copy(tabs = tabs))
             }
             null
-        } catch (e: Exception) {
-            e.message ?: "Unknown parse error"
+        } else {
+            result.exceptionOrNull()?.message ?: "Unknown parse error"
         }
     }
 }

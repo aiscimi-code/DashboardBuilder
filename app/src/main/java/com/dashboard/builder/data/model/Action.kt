@@ -14,7 +14,8 @@ enum class ActionType {
     ADD_TO_LIST,
     ADD_TO_CHECKBOX_LIST,
     INCREMENT_COUNTER,
-    DECREMENT_COUNTER
+    DECREMENT_COUNTER,
+    SWITCH_TAB
 }
 
 @Serializable

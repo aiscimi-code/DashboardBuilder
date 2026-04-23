@@ -35,6 +35,7 @@ class EventEngine {
             ActionType.ADD_TO_CHECKBOX_LIST -> applyAddToCheckboxList(box, data)
             ActionType.INCREMENT_COUNTER -> applyIncrementCounter(box)
             ActionType.DECREMENT_COUNTER -> applyDecrementCounter(box)
+            ActionType.SWITCH_TAB -> box // No direct effect here; handled in ViewModel
         }
     }
 
