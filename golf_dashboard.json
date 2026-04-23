@@ -1,0 +1,179 @@
+{
+ "Tab A - Dashboard": {
+ "title": "⛳ Golf Command Center",
+ "round_1": "St Andrews - 82",
+ "round_2": "Pebble Beach - 88",
+ "round_3": "Augusta - 79",
+ "round_4": "Royal Dublin - 85",
+ "round_5": "Ballybunion - 91",
+ "round_6": "Portmarnock - 83",
+ "nav_r1": "Go to Round 1",
+ "nav_r2": "Go to Round 2",
+ "nav_r3": "Go to Round 3",
+ "nav_r4": "Go to Round 4",
+ "nav_r5": "Go to Round 5",
+ "nav_r6": "Go to Round 6"
+ },
+
+ "Round 1 - St Andrews": {
+ "course": "St Andrews",
+ "total_score": 82,
+ "nav_back": "Back to Dashboard",
+ "weather": "Windy 14C",
+ "holes": [
+ { "hole": 1, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Pulled left" },
+ { "hole": 2, "par": 4, "score": 4, "club": "3 Wood", "putts": 2, "notes": "Fairway hit" },
+ { "hole": 3, "par": 3, "score": 3, "club": "6 Iron", "putts": 2, "notes": "Good strike" },
+ { "hole": 4, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Missed green" },
+ { "hole": 5, "par": 5, "score": 6, "club": "Driver", "putts": 2, "notes": "Layup" },
+ { "hole": 6, "par": 4, "score": 4, "club": "4 Iron", "putts": 2, "notes": "Solid" },
+ { "hole": 7, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Rough" },
+ { "hole": 8, "par": 3, "score": 3, "club": "7 Iron", "putts": 2, "notes": "Safe" },
+ { "hole": 9, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Routine" },
+ { "hole": 10, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Wind affected" },
+ { "hole": 11, "par": 3, "score": 3, "club": "8 Iron", "putts": 2, "notes": "Accurate" },
+ { "hole": 12, "par": 4, "score": 4, "club": "3 Wood", "putts": 2, "notes": "Fairway" },
+ { "hole": 13, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Pulled again" },
+ { "hole": 14, "par": 5, "score": 6, "club": "Driver", "putts": 2, "notes": "Long hole" },
+ { "hole": 15, "par": 4, "score": 4, "club": "4 Iron", "putts": 2, "notes": "Controlled" },
+ { "hole": 16, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Miss right" },
+ { "hole": 17, "par": 3, "score": 3, "club": "7 Iron", "putts": 2, "notes": "Green hit" },
+ { "hole": 18, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Finish strong" }
+ ]
+ },
+
+ "Round 2 - Pebble Beach": {
+ "course": "Pebble Beach",
+ "total_score": 88,
+ "nav_back": "Back to Dashboard",
+ "weather": "Cool coastal wind",
+ "holes": [
+ { "hole": 1, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Nervous start" },
+ { "hole": 2, "par": 5, "score": 6, "club": "Driver", "putts": 2, "notes": "Layup" },
+ { "hole": 3, "par": 4, "score": 5, "club": "3 Wood", "putts": 2, "notes": "Short" },
+ { "hole": 4, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Solid" },
+ { "hole": 5, "par": 3, "score": 3, "club": "8 Iron", "putts": 2, "notes": "Safe" },
+ { "hole": 6, "par": 5, "score": 7, "club": "Driver", "putts": 3, "notes": "Penalty" },
+ { "hole": 7, "par": 3, "score": 3, "club": "9 Iron", "putts": 2, "notes": "Nice shot" },
+ { "hole": 8, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Cliff wind" },
+ { "hole": 9, "par": 4, "score": 4, "club": "3 Wood", "putts": 2, "notes": "Control" },
+ { "hole": 10, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Miss fairway" },
+ { "hole": 11, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Recovery" },
+ { "hole": 12, "par": 3, "score": 3, "club": "7 Iron", "putts": 2, "notes": "Green" },
+ { "hole": 13, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Rough" },
+ { "hole": 14, "par": 5, "score": 6, "club": "Driver", "putts": 2, "notes": "Long" },
+ { "hole": 15, "par": 4, "score": 4, "club": "4 Iron", "putts": 2, "notes": "Fairway" },
+ { "hole": 16, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Bunker" },
+ { "hole": 17, "par": 3, "score": 4, "club": "7 Iron", "putts": 2, "notes": "3 putt" },
+ { "hole": 18, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Finish" }
+ ]
+ },
+
+ "Round 3 - Augusta": {
+ "course": "Augusta",
+ "total_score": 79,
+ "nav_back": "Back to Dashboard",
+ "weather": "Sunny warm",
+ "holes": [
+ { "hole": 1, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Perfect" },
+ { "hole": 2, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Solid" },
+ { "hole": 3, "par": 3, "score": 3, "club": "7 Iron", "putts": 2, "notes": "Ace chance" },
+ { "hole": 4, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Double" },
+ { "hole": 5, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Fairway" },
+ { "hole": 6, "par": 3, "score": 3, "club": "8 Iron", "putts": 2, "notes": "Green" },
+ { "hole": 7, "par": 4, "score": 4, "club": "3 Wood", "putts": 2, "notes": "Nice" },
+ { "hole": 8, "par": 5, "score": 5, "club": "Driver", "putts": 2, "notes": "Eagle chance" },
+ { "hole": 9, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Turn" },
+ { "hole": 10, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Back on track" },
+ { "hole": 11, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Steady" },
+ { "hole": 12, "par": 3, "score": 3, "club": "9 Iron", "putts": 2, "notes": "Golden" },
+ { "hole": 13, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Tough" },
+ { "hole": 14, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Par" },
+ { "hole": 15, "par": 4, "score": 4, "club": "5 Wood", "putts": 2, "notes": "Safe" },
+ { "hole": 16, "par": 3, "score": 3, "club": "7 Iron", "putts": 2, "notes": "Birdie" },
+ { "hole": 17, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Solid" },
+ { "hole": 18, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Finish" }
+ ]
+ },
+
+ "Round 4 - Royal Dublin": {
+ "course": "Royal Dublin",
+ "total_score": 85,
+ "nav_back": "Back to Dashboard",
+ "weather": "Rain showers",
+ "holes": [
+ { "hole": 1, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Start" },
+ { "hole": 2, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Wet" },
+ { "hole": 3, "par": 3, "score": 4, "club": "7 Iron", "putts": 2, "notes": "Long" },
+ { "hole": 4, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Fairway" },
+ { "hole": 5, "par": 5, "score": 5, "club": "Driver", "putts": 2, "notes": "Good" },
+ { "hole": 6, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Bunker" },
+ { "hole": 7, "par": 4, "score": 4, "club": "3 Wood", "putts": 2, "notes": "Recovery" },
+ { "hole": 8, "par": 3, "score": 3, "club": "8 Iron", "putts": 2, "notes": "Green" },
+ { "hole": 9, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Turn" },
+ { "hole": 10, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Struggle" },
+ { "hole": 11, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Better" },
+ { "hole": 12, "par": 3, "score": 3, "club": "7 Iron", "putts": 2, "notes": "Tap in" },
+ { "hole": 13, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Rough" },
+ { "hole": 14, "par": 5, "score": 6, "club": "Driver", "putts": 2, "notes": "Hard" },
+ { "hole": 15, "par": 4, "score": 4, "club": "4 Iron", "putts": 2, "notes": "Nice" },
+ { "hole": 16, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Steady" },
+ { "hole": 17, "par": 3, "score": 3, "club": "7 Iron", "putts": 2, "notes": "Green" },
+ { "hole": 18, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Finish" }
+ ]
+ },
+
+ "Round 5 - Ballybunion": {
+ "course": "Ballybunion",
+ "total_score": 91,
+ "nav_back": "Back to Dashboard",
+ "weather": "Windy coastal",
+ "holes": [
+ { "hole": 1, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Tough wind" },
+ { "hole": 2, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Lost ball" },
+ { "hole": 3, "par": 3, "score": 4, "club": "7 Iron", "putts": 2, "notes": "Over club" },
+ { "hole": 4, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Fairway" },
+ { "hole": 5, "par": 5, "score": 6, "club": "Driver", "putts": 2, "notes": "Long" },
+ { "hole": 6, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Dune" },
+ { "hole": 7, "par": 4, "score": 4, "club": "3 Wood", "putts": 2, "notes": "Recovery" },
+ { "hole": 8, "par": 3, "score": 3, "club": "8 Iron", "putts": 2, "notes": "Green" },
+ { "hole": 9, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Rough" },
+ { "hole": 10, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Wind" },
+ { "hole": 11, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Solid" },
+ { "hole": 12, "par": 3, "score": 3, "club": "7 Iron", "putts": 2, "notes": "Safe" },
+ { "hole": 13, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "OB" },
+ { "hole": 14, "par": 5, "score": 6, "club": "Driver", "putts": 2, "notes": "Hard" },
+ { "hole": 15, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Bunker" },
+ { "hole": 16, "par": 4, "score": 4, "club": "4 Iron", "putts": 2, "notes": "Nice" },
+ { "hole": 17, "par": 3, "score": 4, "club": "7 Iron", "putts": 2, "notes": "3 putt" },
+ { "hole": 18, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Done" }
+ ]
+ },
+
+ "Round 6 - Portmarnock": {
+ "course": "Portmarnock",
+ "total_score": 83,
+ "nav_back": "Back to Dashboard",
+ "weather": "Dry calm",
+ "holes": [
+ { "hole": 1, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Clean" },
+ { "hole": 2, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Fairway" },
+ { "hole": 3, "par": 3, "score": 3, "club": "6 Iron", "putts": 2, "notes": "Close" },
+ { "hole": 4, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Miss" },
+ { "hole": 5, "par": 5, "score": 5, "club": "Driver", "putts": 2, "notes": "Eagle" },
+ { "hole": 6, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Steady" },
+ { "hole": 7, "par": 4, "score": 4, "club": "3 Wood", "putts": 2, "notes": "Good" },
+ { "hole": 8, "par": 3, "score": 3, "club": "8 Iron", "putts": 2, "notes": "Green" },
+ { "hole": 9, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Turn" },
+ { "hole": 10, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Rough" },
+ { "hole": 11, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Par" },
+ { "hole": 12, "par": 3, "score": 3, "club": "7 Iron", "putts": 2, "notes": "Birdie" },
+ { "hole": 13, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Fairway" },
+ { "hole": 14, "par": 5, "score": 5, "club": "Driver", "putts": 2, "notes": "Nice" },
+ { "hole": 15, "par": 4, "score": 5, "club": "Driver", "putts": 2, "notes": "Bunker" },
+ { "hole": 16, "par": 4, "score": 4, "club": "4 Iron", "putts": 2, "notes": "Solid" },
+ { "hole": 17, "par": 3, "score": 3, "club": "7 Iron", "putts": 2, "notes": "Tap in" },
+ { "hole": 18, "par": 4, "score": 4, "club": "Driver", "putts": 2, "notes": "Done" }
+ ]
+ }
+}
