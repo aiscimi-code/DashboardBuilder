@@ -23,11 +23,13 @@ data class Box(
             return "${type.name.lowercase()}_$idCounter"
         }
 
-        fun create(type: BoxType, position: Position = Position()): Box {
-            // Default sizes: boxes are 10x2, buttons are 1x1
-            val defaultSize = when (type) {
+        fun create(type: BoxType, position: Position = Position(), size: Size? = null): Box {
+            // Default sizes per issue requirements:
+            // - Box: 1x1 min, default 1x5, max 256x10
+            // - Button: 1x1 min and default, max 10x10
+            val defaultSize = size ?: when (type) {
                 BoxType.BUTTON -> Size(1, 1)
-                else -> Size(10, 2)
+                else -> Size(1, 5)
             }
             return Box(
                 id = generateId(type),

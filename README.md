@@ -20,7 +20,7 @@ A native Android application for building customizable dashboards with a drag-an
 4. **Double-Tap Edit** - Quick access to edit dialog
 5. **Full-Screen Text Editor** - For editing TEXT and INPUT box content
 6. **Box-to-Box Actions** - Configure actions (e.g., button increments counter)
-7. **Tab System** - Multiple dashboard tabs (A-J)
+7. **Tab System** - Multiple dashboard tabs (A-Z, A1-Z1, etc. up to 256 tabs), showing 8 at a time with +/- navigation
 8. **JSON Export/Import** - Save and load dashboard configurations via SAF (Storage Access Framework)
 9. **Auto-Save & Restore** - Automatically saves on app exit with 3 rotating backups + restore option
 10. **Generic JSON Import** - Import any structured JSON file, auto-converted to dashboard tabs
@@ -95,13 +95,13 @@ app/src/main/java/com/dashboard/builder/
 
 ## Box Types
 
-| Type | Description | Default Size |
-|------|-------------|--------------|
-| TEXT | Read-only text display | 10x2 |
-| INPUT | Editable text input field | 10x2 |
-| BUTTON | Clickable action button | 1x1 |
-| CHECKBOX_LIST | Todo-style checkbox list | 10x2 |
-| COUNTER | Numeric counter with +/- buttons | 10x2 |
+| Type | Description | Default Size | Size Range |
+|------|-------------|--------------|------------|
+| TEXT | Read-only text display | 1x5 | 1x1 to 256x10 |
+| INPUT | Editable text input field | 1x5 | 1x1 to 256x10 |
+| BUTTON | Clickable action button | 1x1 | 1x1 to 10x10 |
+| CHECKBOX_LIST | Todo-style checkbox list | 1x5 | 1x1 to 256x10 |
+| COUNTER | Numeric counter with +/- buttons | 1x5 | 1x1 to 256x10 |
 
 ## Default Sample Data
 
@@ -152,6 +152,7 @@ APK output: `app/build/outputs/apk/debug/app-debug.apk`
 
 ## Version History
 
+- **v1.2.0** - Tab system expanded to 256 tabs (A-Z, A1-Z1...), show 8 at a time with navigation. Component sizing: boxes 1x1-256x10, buttons 1x1-10x10
 - **v1.1.0** - Auto-save on exit with 3 rotating backups + restore option, generic JSON import
 - **v1.0.9** - Tab B workout dashboard with linked boxes (dark theme)
 - **v1.0.8** - Move mode: tap any box to select, disable inputs/buttons in move mode

@@ -31,6 +31,13 @@ enum class EditMode {
     LINK
 }
 
+data class TabPagination(
+    val currentPage: Int,
+    val totalPages: Int,
+    val visibleTabIds: List<String>,
+    val showAddButton: Boolean
+)
+
 class MainViewModel : ViewModel() {
     // Simple undo stack (stores previous app states)
     private val undoStack = mutableListOf<AppState>()
@@ -57,6 +64,73 @@ class MainViewModel : ViewModel() {
     fun selectTab(tabId: String) {
         _uiState.update { it.copy(selectedTabId = tabId, selectedBoxId = null, mode = EditMode.VIEW) }
     }
+    
+    // Add a new tab
+    fun addTab() {
+        val currentState = _uiState.value
+        val existingIds = currentState.appState.tabs.map { it.id }
+        val newTabId = TabManager.getNextTabId(existingIds)
+        
+        if (newTabId == null) {
+            // Max tabs reached
+            return
+        }
+        
+        // Save current state for undo
+        pushUndo(currentState.appState)
+        
+        val newTab = Tab.createDefault(newTabId, "Tab $newTabId")
+        _uiState.update { state ->
+            state.copy(
+                appState = state.appState.copy(
+                    tabs = state.appState.tabs + newTab
+                ),
+                selectedTabId = newTabId,
+                selectedBoxId = null,
+                mode = EditMode.VIEW
+            )
+        }
+    }
+    
+    // Get tab pagination info
+    fun getTabPagination(): TabPagination {
+        val totalTabs = _uiState.value.appState.tabs.size
+        val currentPage = TabManager.getPageForTab(_uiState.value.selectedTabId, totalTabs)
+        val totalPages = TabManager.getTotalPages(totalTabs, TabManager.canAddMoreTabs(totalTabs))
+        val visibleTabs = TabManager.getTabsForPage(currentPage, totalTabs, TabManager.canAddMoreTabs(totalTabs))
+        val showAddButton = TabManager.canAddMoreTabs(totalTabs) && 
+            currentPage == totalPages - 1 && 
+            !visibleTabs.contains("+")
+        
+        return TabPagination(
+            currentPage = currentPage,
+            totalPages = totalPages,
+            visibleTabIds = visibleTabs,
+            showAddButton = showAddButton
+        )
+    }
+    
+    // Go to previous page of tabs
+    fun previousTabPage() {
+        val pagination = getTabPagination()
+        if (pagination.currentPage > 0) {
+            val currentTabIndex = _uiState.value.appState.tabs.indexOfFirst { it.id == _uiState.value.selectedTabId }
+            val newIndex = (currentTabIndex - TabManager.TABS_PER_PAGE).coerceAtLeast(0)
+            val newTabId = _uiState.value.appState.tabs.getOrNull(newIndex)?.id ?: return
+            selectTab(newTabId)
+        }
+    }
+    
+    // Go to next page of tabs
+    fun nextTabPage() {
+        val pagination = getTabPagination()
+        if (pagination.currentPage < pagination.totalPages - 1) {
+            val currentTabIndex = _uiState.value.appState.tabs.indexOfFirst { it.id == _uiState.value.selectedTabId }
+            val newIndex = (currentTabIndex + TabManager.TABS_PER_PAGE).coerceAtMost(_uiState.value.appState.tabs.size - 1)
+            val newTabId = _uiState.value.appState.tabs.getOrNull(newIndex)?.id ?: return
+            selectTab(newTabId)
+        }
+    }
 
     // Box selection
     fun selectBox(boxId: String?) {
@@ -73,18 +147,18 @@ class MainViewModel : ViewModel() {
     }
 
     // Add box
-    fun addBox(type: BoxType) {
+    fun addBox(type: BoxType, size: Size? = null) {
         // Save current state for undo
         pushUndo(_uiState.value.appState)
         _uiState.update { state ->
             val tab = state.appState.tabs.find { it.id == state.selectedTabId } ?: return@update state
-            // Get default size based on type
-            val defaultSize = when (type) {
+            // Get default size based on type, or use provided size
+            val boxSize = size ?: when (type) {
                 BoxType.BUTTON -> Size(1, 1)
-                else -> Size(10, 2)
+                else -> Size(1, 5)
             }
-            val position = GridEngine.findFirstAvailable(tab.boxes, defaultSize)
-            val newBox = Box.create(type, position)
+            val position = GridEngine.findFirstAvailable(tab.boxes, boxSize)
+            val newBox = Box.create(type, position, boxSize)
 
             val updatedTab = tab.copy(boxes = tab.boxes + newBox)
             val updatedTabs = state.appState.tabs.map {

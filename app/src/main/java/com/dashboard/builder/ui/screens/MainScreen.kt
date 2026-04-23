@@ -195,9 +195,14 @@ fun MainScreen(viewModel: MainViewModel) {
                 .padding(paddingValues)
         ) {
             // Tab bar
+            val tabPagination = viewModel.getTabPagination()
             TabBar(
                 state = uiState,
-                onTabSelected = { viewModel.selectTab(it) }
+                pagination = tabPagination,
+                onTabSelected = { viewModel.selectTab(it) },
+                onAddTab = { viewModel.addTab() },
+                onPreviousPage = { viewModel.previousTabPage() },
+                onNextPage = { viewModel.nextTabPage() }
             )
             
             // Grid - use actual screen width to fit 10 columns
@@ -250,8 +255,8 @@ fun MainScreen(viewModel: MainViewModel) {
     if (showAddSheet) {
         AddBoxSheet(
             onDismiss = { showAddSheet = false },
-            onBoxTypeSelected = { boxType ->
-                viewModel.addBox(type = boxType)
+            onBoxTypeSelected = { boxType, width, height ->
+                viewModel.addBox(type = boxType, size = Size(width, height))
                 showAddSheet = false
             }
         )

@@ -37,16 +37,16 @@ DashboardBuilder/
 └─ README.md
 
 ## Box Types
-- **TEXT**: Read-only text display
-- **INPUT**: Editable text input field
-- **BUTTON**: Clickable action button
-- **CHECKBOX_LIST**: Todo-style checkbox list
-- **COUNTER**: Numeric counter with +/- buttons
+- **TEXT**: Read-only text display (default 1x5, range 1x1-256x10)
+- **INPUT**: Editable text input field (default 1x5, range 1x1-256x10)
+- **BUTTON**: Clickable action button (default 1x1, range 1x1-10x10)
+- **CHECKBOX_LIST**: Todo-style checkbox list (default 1x5, range 1x1-256x10)
+- **COUNTER**: Numeric counter with +/- buttons (default 1x5, range 1x1-256x10)
 
 ## Key Features Implemented
 - **10-Column Responsive Grid**: Auto-sizes to screen width
 - **Drag-and-Drop**: Move boxes by dragging in Move mode
-- **Tab System**: Multiple dashboard tabs (A-J)
+- **Tab System**: Multiple dashboard tabs (A-Z, A1-Z1, up to 256 tabs), 8 shown at a time with navigation arrows
 - **JSON Export/Import**: Via SAF (Storage Access Framework)
 - **Auto-Save**: Saves to internal storage on app onStop()
 - **3 Rotating Backups**: Maintains backup_0.json, backup_1.json, backup_2.json
@@ -54,6 +54,7 @@ DashboardBuilder/
 - **Generic JSON Import**: Import any structured JSON, auto-converted to dashboard tabs
 - **Box-to-Box Actions**: SET_TEXT, ADD_TO_LIST, ADD_TO_CHECKBOX_LIST, INCREMENT_COUNTER, DECREMENT_COUNTER, SWITCH_TAB
 - **Undo**: Stores previous AppState snapshots (max 10)
+- **Component Sizing**: Configurable size for all box types (boxes: 1x1-256x10, buttons: 1x1-10x10)
 
 ## Building & Running
 ```bash

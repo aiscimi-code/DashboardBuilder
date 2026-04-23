@@ -86,21 +86,33 @@ fun EditBoxSheet(
             Spacer(modifier = Modifier.height(12.dp))
 
             // Size controls
+            val isButton = box.type == BoxType.BUTTON
+            val maxWidth = if (isButton) 10 else 256
+            val maxHeight = 10
+            
+            Text(
+                text = "Size",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OutlinedTextField(
                     value = boxWidth,
-                    onValueChange = { boxWidth = it.filter { c -> c.isDigit() }.take(2) },
-                    label = { Text("Width (1-10)") },
-                    modifier = Modifier.weight(1f)
+                    onValueChange = { boxWidth = it.filter { c -> c.isDigit() }.take(3) },
+                    label = { Text("Width (1-$maxWidth)") },
+                    modifier = Modifier.weight(1f),
+                    supportingText = { Text("min: 1, max: $maxWidth") }
                 )
                 OutlinedTextField(
                     value = boxHeight,
                     onValueChange = { boxHeight = it.filter { c -> c.isDigit() }.take(2) },
-                    label = { Text("Height (1-32)") },
-                    modifier = Modifier.weight(1f)
+                    label = { Text("Height (1-$maxHeight)") },
+                    modifier = Modifier.weight(1f),
+                    supportingText = { Text("min: 1, max: $maxHeight") }
                 )
             }
 
@@ -208,9 +220,12 @@ fun EditBoxSheet(
                     onUpdateLabel(label)
                     onUpdateLocked(locked)
                     onUpdateBackgroundColor(backgroundColor)
-                    // Update size
-                    val w = boxWidth.toIntOrNull()?.coerceIn(1, 10) ?: box.size.w
-                    val h = boxHeight.toIntOrNull()?.coerceIn(1, 32) ?: box.size.h
+                    // Update size with type-specific constraints
+                    val isButton = box.type == BoxType.BUTTON
+                    val maxW = if (isButton) 10 else 256
+                    val maxH = 10
+                    val w = boxWidth.toIntOrNull()?.coerceIn(1, maxW) ?: box.size.w
+                    val h = boxHeight.toIntOrNull()?.coerceIn(1, maxH) ?: box.size.h
                     if (w != box.size.w || h != box.size.h) {
                         onUpdateSize(w, h)
                     }

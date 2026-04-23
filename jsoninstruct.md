@@ -31,6 +31,16 @@ The app uses a **10-column by 32-row grid**. Each box occupies a specific number
 - Position (x, y) where x = column, y = row
 - Size (w, h) where w = columns wide, h = rows tall
 
+### Box Size Ranges
+- **Regular boxes** (TEXT, INPUT, CHECKBOX_LIST, COUNTER):
+  - Minimum: 1×1
+  - Default: 1×5
+  - Maximum: 256×10
+- **Buttons**:
+  - Minimum: 1×1
+  - Default: 1×1
+  - Maximum: 10×10
+
 ---
 
 ## 2. Creating Your First Dashboard
@@ -41,7 +51,10 @@ When you first open the app, you'll see the default Training Dashboard with samp
 ### Step 2: Add a New Box
 1. Tap the **+ (Add)** button in the bottom menu
 2. Select a box type from the list (TEXT, INPUT, BUTTON, CHECKBOX_LIST, COUNTER)
-3. The box appears in the first available position
+3. **Configure size** (if prompted):
+   - Enter width (columns) and height (rows)
+   - Size limits vary by box type (see Section 3)
+4. The box appears in the first available position with your chosen size
 
 ### Step 3: Edit a Box
 1. **Single tap** on a box to select it (shows selection border)
@@ -64,7 +77,8 @@ When you first open the app, you'll see the default Training Dashboard with samp
 ### TEXT
 - **Purpose**: Display read-only information
 - **Use for**: Headers, labels, instructions, static data
-- **Default size**: 10 columns × 2 rows
+- **Default size**: 1 column × 5 rows
+- **Size range**: 1×1 to 256×10
 - **Configurable**: Background color, text content
 
 **Example use case**: Display today's date, a welcome message, or section headers.
@@ -72,7 +86,8 @@ When you first open the app, you'll see the default Training Dashboard with samp
 ### INPUT
 - **Purpose**: Collect user text input
 - **Use for**: Notes fields, search boxes, data entry
-- **Default size**: 10 columns × 2 rows
+- **Default size**: 1 column × 5 rows
+- **Size range**: 1×1 to 256×10
 - **Configurable**: Placeholder text, background color
 
 **Example use case**: Workout notes, daily journal entry, quick capture field.
@@ -80,7 +95,8 @@ When you first open the app, you'll see the default Training Dashboard with samp
 ### BUTTON
 - **Purpose**: Trigger actions when tapped
 - **Use for**: Navigation, executing functions, starting timers
-- **Default size**: 1 column × 1 row (can resize)
+- **Default size**: 1 column × 1 row
+- **Size range**: 1×1 to 10×10
 - **Configurable**: Button text, background color, actions
 
 **Example use case**: "Start Workout", "Complete Task", "Next Tab".
@@ -88,7 +104,8 @@ When you first open the app, you'll see the default Training Dashboard with samp
 ### CHECKBOX_LIST
 - **Purpose**: Display and manage a list of checkable items
 - **Use for**: Todo lists, exercise sets, shopping lists
-- **Default size**: 10 columns × 2 rows (adjustable)
+- **Default size**: 1 column × 5 rows
+- **Size range**: 1×1 to 256×10
 - **Configurable**: List items (text + checked state), background color
 
 **Example use case**: Workout exercise list, morning routine checklist, grocery items.
@@ -96,7 +113,8 @@ When you first open the app, you'll see the default Training Dashboard with samp
 ### COUNTER
 - **Purpose**: Display and adjust numeric values
 - **Use for**: Scores, quantities, step counts, repetitions
-- **Default size**: 10 columns × 2 rows
+- **Default size**: 1 column × 5 rows
+- **Size range**: 1×1 to 256×10
 - **Configurable**: Label, initial value, background color
 
 **Example use case**: Workout count, calories burned, water glasses drank.
@@ -134,7 +152,18 @@ Boxes can trigger actions in other boxes when clicked or when their content chan
 
 ## 5. Working with Tabs
 
-The app supports up to 10 tabs (A through J), each containing its own independent dashboard.
+The app supports up to **256 tabs** for organizing multiple dashboards. Tab naming follows a pattern:
+- **A-Z** (26 tabs)
+- **A1-Z1**, **A2-Z2**, etc. (up to 230 more tabs)
+
+### Viewing Tabs
+- Only **8 tabs** are visible at a time
+- Use **arrow buttons** (< and >) on the tab bar to navigate between pages
+- A tab counter shows current/max (e.g., "3/256")
+
+### Adding New Tabs
+- Tap the **+** button on the tab bar to add a new tab
+- The new tab gets the next available ID (e.g., if you have A-C, adding a new tab creates D)
 
 ### Creating Tab Navigation
 1. Add a **BUTTON** box on the source tab
@@ -426,4 +455,4 @@ This automatically creates:
 ---
 
 *Last updated: April 2026*
-*Dashboard Builder v1.1.0*
+*Dashboard Builder v1.2.0*
