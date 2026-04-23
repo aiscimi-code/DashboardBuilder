@@ -1,6 +1,6 @@
 # Dashboard Builder
 
-A native Android application for building customizable dashboards with a drag-and-drop grid system. Designed for creating personal trainer and productivity dashboards with various widget types.
+A native Android application for building customizable dashboards with a drag-and-drop grid system. Designed for creating personal trainer, productivity, and hotel management dashboards with various widget types.
 
 ## Technology Stack
 
@@ -11,6 +11,19 @@ A native Android application for building customizable dashboards with a drag-an
 - **Architecture:** MVVM (Model-View-ViewModel)
 - **State Management:** Kotlin StateFlow / Compose State
 - **Serialization:** Kotlinx Serialization (JSON)
+
+## Key Features
+
+1. **10-Column Responsive Grid** - Automatically sizes to fit screen width
+2. **Drag-and-Drop** - Move boxes by dragging in Move mode
+3. **Move Mode** - Tap any box to select, drag to move. All inputs/buttons disabled
+4. **Double-Tap Edit** - Quick access to edit dialog
+5. **Full-Screen Text Editor** - For editing TEXT and INPUT box content
+6. **Box-to-Box Actions** - Configure actions (e.g., button increments counter)
+7. **Tab System** - Multiple dashboard tabs (A-J)
+8. **JSON Export/Import** - Save and load dashboard configurations via SAF (Storage Access Framework)
+9. **Auto-Save & Restore** - Automatically saves on app exit with 3 rotating backups + restore option
+10. **Generic JSON Import** - Import any structured JSON file, auto-converted to dashboard tabs
 
 ## Programming Methodology
 
@@ -90,17 +103,6 @@ app/src/main/java/com/dashboard/builder/
 | CHECKBOX_LIST | Todo-style checkbox list | 10x2 |
 | COUNTER | Numeric counter with +/- buttons | 10x2 |
 
-## Key Features
-
-1. **10-Column Responsive Grid** - Automatically sizes to fit screen width
-2. **Drag-and-Drop** - Move boxes by dragging in Move mode
-3. **Move Mode** - Tap any box to select, drag to move. All inputs/buttons disabled
-4. **Double-Tap Edit** - Quick access to edit dialog
-5. **Full-Screen Text Editor** - For editing TEXT and INPUT box content
-6. **Box-to-Box Actions** - Configure actions (e.g., button increments counter)
-7. **Tab System** - Multiple dashboard tabs (A-J)
-8. **JSON Export/Import** - Save and load dashboard configurations
-
 ## Default Sample Data
 
 ### Tab A - Training Dashboard (Light Theme)
@@ -150,6 +152,7 @@ APK output: `app/build/outputs/apk/debug/app-debug.apk`
 
 ## Version History
 
+- **v1.1.0** - Auto-save on exit with 3 rotating backups + restore option, generic JSON import
 - **v1.0.9** - Tab B workout dashboard with linked boxes (dark theme)
 - **v1.0.8** - Move mode: tap any box to select, disable inputs/buttons in move mode
 - **v1.0.7** - Grid drag-drop bug fixes (movement, resize, stale closures)
