@@ -1,0 +1,1622 @@
+{
+  "appVersion": "1.0",
+  "tabs": [
+    {
+      "id": "A",
+      "name": "Index",
+      "backgroundColor": "#F5F5F5",
+      "boxes": [
+        {
+          "id": "roomBtn_312",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Room 312"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "312"
+              }
+            }
+          ]
+        },
+        {
+          "id": "roomBtn_308",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 1
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Room 308"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "308"
+              }
+            }
+          ]
+        },
+        {
+          "id": "roomBtn_215",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 2
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Room 215"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "215"
+              }
+            }
+          ]
+        },
+        {
+          "id": "roomBtn_220",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 3
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Room 220"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "220"
+              }
+            }
+          ]
+        },
+        {
+          "id": "roomBtn_301",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 4
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Room 301"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "301"
+              }
+            }
+          ]
+        },
+        {
+          "id": "roomBtn_225",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 5
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Room 225"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "225"
+              }
+            }
+          ]
+        },
+        {
+          "id": "roomBtn_310",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 6
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Room 310"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "310"
+              }
+            }
+          ]
+        },
+        {
+          "id": "roomBtn_318",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 7
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Room 318"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "318"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "312",
+      "name": "Room 312",
+      "backgroundColor": "#FFFFFF",
+      "boxes": [
+        {
+          "id": "header_312",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Room 312",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Status_312",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 1
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Status: checkout",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Type_312",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 2
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Type: Suite",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Priority_312",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 3
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Priority: urgent",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Estimated_Minutes_312",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 4
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Estimated Minutes: 45",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Notes_312",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 5
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Notes: High priority - early check-in expected",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "back_312",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 6
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Back to Index"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "A"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "308",
+      "name": "Room 308",
+      "backgroundColor": "#FFFFFF",
+      "boxes": [
+        {
+          "id": "header_308",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Room 308",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Status_308",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 1
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Status: checkout",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Type_308",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 2
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Type: Deluxe Double",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Priority_308",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 3
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Priority: high",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Estimated_Minutes_308",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 4
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Estimated Minutes: 35",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "back_308",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 5
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Back to Index"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "A"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "215",
+      "name": "Room 215",
+      "backgroundColor": "#FFFFFF",
+      "boxes": [
+        {
+          "id": "header_215",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Room 215",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Status_215",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 1
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Status: checkout",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Type_215",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 2
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Type: Standard Twin",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Priority_215",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 3
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Priority: high",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Estimated_Minutes_215",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 4
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Estimated Minutes: 30",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Notes_215",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 5
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Notes: VIP guest - premium service",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "back_215",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 6
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Back to Index"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "A"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "220",
+      "name": "Room 220",
+      "backgroundColor": "#FFFFFF",
+      "boxes": [
+        {
+          "id": "header_220",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Room 220",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Status_220",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 1
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Status: stayover",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Type_220",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 2
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Type: Standard Double",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Priority_220",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 3
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Priority: normal",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Estimated_Minutes_220",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 4
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Estimated Minutes: 20",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Notes_220",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 5
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Notes: Do not disturb until 12:00",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "back_220",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 6
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Back to Index"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "A"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "301",
+      "name": "Room 301",
+      "backgroundColor": "#FFFFFF",
+      "boxes": [
+        {
+          "id": "header_301",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Room 301",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Status_301",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 1
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Status: checkout",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Type_301",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 2
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Type: Deluxe King",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Priority_301",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 3
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Priority: normal",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Estimated_Minutes_301",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 4
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Estimated Minutes: 35",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "back_301",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 5
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Back to Index"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "A"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "225",
+      "name": "Room 225",
+      "backgroundColor": "#FFFFFF",
+      "boxes": [
+        {
+          "id": "header_225",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Room 225",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Status_225",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 1
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Status: stayover",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Type_225",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 2
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Type: Standard Single",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Priority_225",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 3
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Priority: low",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Estimated_Minutes_225",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 4
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Estimated Minutes: 15",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Notes_225",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 5
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Notes: No specific requests",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "back_225",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 6
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Back to Index"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "A"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "310",
+      "name": "Room 310",
+      "backgroundColor": "#FFFFFF",
+      "boxes": [
+        {
+          "id": "header_310",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Room 310",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Status_310",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 1
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Status: checkout",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Type_310",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 2
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Type: Suite",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Priority_310",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 3
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Priority: normal",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Estimated_Minutes_310",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 4
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Estimated Minutes: 45",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Notes_310",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 5
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Notes: Extension requested if available",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "back_310",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 6
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Back to Index"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "A"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "318",
+      "name": "Room 318",
+      "backgroundColor": "#FFFFFF",
+      "boxes": [
+        {
+          "id": "header_318",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Room 318",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Status_318",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 1
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Status: stayover",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Type_318",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 2
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Type: Standard Double",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Priority_318",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 3
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Priority: low",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Estimated_Minutes_318",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 4
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Estimated Minutes: 20",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "Notes_318",
+          "type": "TEXT",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 5
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#FFFFFF"
+          },
+          "config": {
+            "value": "Notes: Late checkout granted - 14:00",
+            "editable": false
+          },
+          "actions": []
+        },
+        {
+          "id": "back_318",
+          "type": "BUTTON",
+          "label": "",
+          "position": {
+            "x": 0,
+            "y": 6
+          },
+          "size": {
+            "w": 10,
+            "h": 1
+          },
+          "locked": false,
+          "floating": false,
+          "style": {
+            "backgroundColor": "#4CAF50"
+          },
+          "config": {
+            "text": "Back to Index"
+          },
+          "actions": [
+            {
+              "event": "ON_CLICK",
+              "type": "SWITCH_TAB",
+              "targetBoxId": "",
+              "dataSource": {
+                "value": "A"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

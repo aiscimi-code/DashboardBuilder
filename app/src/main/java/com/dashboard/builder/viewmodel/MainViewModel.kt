@@ -1,5 +1,6 @@
 package com.dashboard.builder.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dashboard.builder.data.model.*
@@ -10,6 +11,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class UiState(
     val appState: AppState = AppState(),
@@ -386,6 +391,94 @@ class MainViewModel : ViewModel() {
             null
         } else {
             result.exceptionOrNull()?.message ?: "Unknown parse error"
+        }
+    }
+
+    // ── Auto-save / Backup / Restore ───────────────────────────────────────
+
+    companion object {
+        private const val PREFS_NAME = "dashboard_prefs"
+        private const val KEY_LAST_BACKUP = "last_backup_index"
+        private const val MAX_BACKUPS = 3
+    }
+
+    /** Save current state to internal storage and rotate backups. */
+    fun saveToInternalStorage(context: Context) {
+        try {
+            val jsonText = json.encodeToString(AppState.serializer(), _uiState.value.appState)
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val backupDir = File(context.filesDir, "backups")
+            if (!backupDir.exists()) backupDir.mkdirs()
+
+            // Get current backup index
+            var index = prefs.getInt(KEY_LAST_BACKUP, 0)
+            val backupFile = File(backupDir, "backup_$index.json")
+            backupFile.writeText(jsonText)
+
+            // Rotate: move to next index for next save
+            index = (index + 1) % MAX_BACKUPS
+            prefs.edit().putInt(KEY_LAST_BACKUP, index).apply()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /** Load latest state from internal storage. Returns true if loaded. */
+    fun loadFromInternalStorage(context: Context): Boolean {
+        return try {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val index = prefs.getInt(KEY_LAST_BACKUP, 0)
+            val backupDir = File(context.filesDir, "backups")
+            val backupFile = File(backupDir, "backup_$index.json")
+
+            if (backupFile.exists()) {
+                val jsonText = backupFile.readText()
+                val result = com.dashboard.builder.data.JsonImportConverter.parse(jsonText)
+                if (result.isSuccess) {
+                    _uiState.update { it.copy(appState = result.getOrThrow()) }
+                    true
+                } else false
+            } else false
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    /** Get list of available backups with timestamps. */
+    fun getBackups(context: Context): List<Pair<String, String>> {
+        val backups = mutableListOf<Pair<String, String>>()
+        val backupDir = File(context.filesDir, "backups")
+        if (!backupDir.exists()) return backups
+
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        for (i in 0 until MAX_BACKUPS) {
+            val file = File(backupDir, "backup_$i.json")
+            if (file.exists()) {
+                val timestamp = dateFormat.format(Date(file.lastModified()))
+                backups.add("backup_$i.json" to timestamp)
+            }
+        }
+        return backups.sortedByDescending { it.second }
+    }
+
+    /** Restore from a specific backup file. */
+    fun restoreBackup(context: Context, filename: String): String? {
+        return try {
+            val backupDir = File(context.filesDir, "backups")
+            val backupFile = File(backupDir, filename)
+            if (!backupFile.exists()) return "Backup file not found"
+
+            val jsonText = backupFile.readText()
+            val result = com.dashboard.builder.data.JsonImportConverter.parse(jsonText)
+            if (result.isSuccess) {
+                _uiState.update { it.copy(appState = result.getOrThrow()) }
+                null
+            } else {
+                result.exceptionOrNull()?.message ?: "Failed to parse backup"
+            }
+        } catch (e: Exception) {
+            e.message ?: "Failed to restore backup"
         }
     }
 }

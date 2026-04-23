@@ -292,7 +292,22 @@ fun MainScreen(viewModel: MainViewModel) {
             },
             onImportCurrentTab = {
                 importTabLauncher.launch(arrayOf("application/json", "text/plain"))
-            }
+            },
+            onRestore = {
+                // Show restore dialog - for now just try to restore latest
+                val backups = viewModel.getBackups(context)
+                if (backups.isNotEmpty()) {
+                    val error = viewModel.restoreBackup(context, backups.first().first)
+                    if (error != null) {
+                        Toast.makeText(context, "Restore failed: $error", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(context, "Restored from backup", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(context, "No backups found", Toast.LENGTH_SHORT).show()
+                }
+            },
+            restoreLabel = "Restore Backup"
         )
     }
 
